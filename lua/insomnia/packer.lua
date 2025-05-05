@@ -52,4 +52,10 @@ return require('packer').startup(function(use)
   --git integration
   use( 'tpope/vim-fugitive' )
 
+  --tab style navigation
+  use({
+	  'akinsho/bufferline.nvim',
+	  requires = 'nvim-tree/nvim-web-devicons',
+  })
+
 end)
