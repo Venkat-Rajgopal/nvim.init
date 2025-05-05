@@ -1,2 +1,16 @@
+# Ignore swap, backup and undo files
+*.swp
+*.swo
+*.bak
+*.tmp
+*.undo
+
+# Ignore logs
+log/
+*.log
+
+# Ignore plugin-compiled files
 plugin/packer_compiled.lua
+
+# macOS junk
 .DS_Store
