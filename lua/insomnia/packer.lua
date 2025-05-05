@@ -1,4 +1,25 @@
-vim.cmd [[packadd packer.nvim]]
+-- Auto-install Packer if not installed
+local ensure_packer = function()
+  local fn = vim.fn
+  local install_path = fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
+  if fn.empty(fn.glob(install_path)) > 0 then
+    print("⏳ Installing packer.nvim...")
+    fn.system({
+      "git",
+      "clone",
+      "--depth", "1",
+      "https://github.com/wbthomason/packer.nvim",
+      install_path,
+    })
+    vim.cmd([[packadd packer.nvim]])
+    print("✅ packer.nvim installed")
+    return true
+  end
+  return false
+end
+
+local packer_bootstrap = ensure_packer()
+
 
 return require('packer').startup(function(use)
   -- Packer can manage itself
