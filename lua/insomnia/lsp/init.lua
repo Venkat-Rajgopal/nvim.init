@@ -1,0 +1,5 @@
+require("insomnia.lsp.mason")
+require("insomnia.lsp.python")
+require("insomnia.lsp.handlers")
+require("insomnia.lsp.markdown")
+require("insomnia.lsp.rust")

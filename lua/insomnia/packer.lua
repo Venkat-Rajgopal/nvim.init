@@ -58,4 +58,49 @@ return require('packer').startup(function(use)
 	  requires = 'nvim-tree/nvim-web-devicons',
   })
 
+  -- LSP Configuration & Plugins
+  use {
+	  'neovim/nvim-lspconfig',
+	  requires = {
+		  -- Automatically install LSPs to stdpath for neovim
+		  'williamboman/mason.nvim',
+		  'williamboman/mason-lspconfig.nvim',
+
+		  -- Useful status updates for LSP
+		  'j-hui/fidget.nvim',
+
+		  -- Additional lua configuration, makes nvim stuff amazing
+		  'folke/neodev.nvim',
+	  },
+  }
+
+  -- Autocompletion
+  use {
+	  'hrsh7th/nvim-cmp',
+	  requires = {
+		  'hrsh7th/cmp-nvim-lsp',
+		  'hrsh7th/cmp-buffer',
+		  'hrsh7th/cmp-path',
+		  'hrsh7th/cmp-cmdline',
+		  'L3MON4D3/LuaSnip',
+		  'saadparwaiz1/cmp_luasnip',
+	  },
+  }
+
+  -- Formatting and linting
+  use 'jose-elias-alvarez/null-ls.nvim'
+  
+  -- some additional Plugins for markdown
+  use {
+	  'preservim/vim-markdown',
+	  requires = 'godlygeek/tabular',
+	  ft = {'markdown'}
+  }
+
+  use {
+	  'iamcco/markdown-preview.nvim',
+	  run = function() vim.fn["mkdp#util#install"]() end,
+	  ft = {'markdown'}
+  }
+
 end)
