@@ -103,4 +103,6 @@ return require('packer').startup(function(use)
 	  ft = {'markdown'}
   }
 
+use { 'windwp/nvim-autopairs' }
+
 end)
