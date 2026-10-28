@@ -1,3 +1,6 @@
+-- packer.nvim (unmaintained) still calls the deprecated vim.tbl_islist
+vim.tbl_islist = vim.islist
+
 -- Auto-install Packer if not installed
 local ensure_packer = function()
   local fn = vim.fn
@@ -32,7 +35,8 @@ return require('packer').startup(function(use)
   }
 
   use { "catppuccin/nvim", as = "catppuccin" }
-  use( 'nvim-treesitter/nvim-treesitter', {run = ':TSUpdate' })
+  -- master branch keeps the nvim-treesitter.configs API; main is a breaking rewrite
+  use { 'nvim-treesitter/nvim-treesitter', branch = 'master', run = ':TSUpdate' }
   use( "nvim-tree/nvim-web-devicons" )
 
   -- tree
@@ -88,7 +92,7 @@ return require('packer').startup(function(use)
   }
 
   -- Formatting and linting
-  use 'jose-elias-alvarez/null-ls.nvim'
+  use { 'nvimtools/none-ls.nvim', requires = 'nvim-lua/plenary.nvim' }
   
   -- some additional Plugins for markdown
   use {

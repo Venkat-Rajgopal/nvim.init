@@ -1,5 +1,3 @@
-local lspconfig = require('lspconfig')
-
 -- Helper function to find the Python executable in a Poetry/uv environment
 local function get_python_path(workspace)
   -- Try to find Poetry environment
@@ -59,7 +57,7 @@ local function get_python_path(workspace)
 end
 
 -- Configure Pyright (Python LSP)
-lspconfig.pyright.setup({
+vim.lsp.config('pyright', {
   before_init = function(_, config)
     config.settings.python.pythonPath = get_python_path(config.root_dir)
   end,
@@ -74,3 +72,4 @@ lspconfig.pyright.setup({
     },
   },
 })
+vim.lsp.enable('pyright')

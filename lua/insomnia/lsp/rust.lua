@@ -1,8 +1,7 @@
-local lspconfig = require('lspconfig')
 local handlers = require('insomnia.lsp.handlers')
 
 -- Configure Rust-Analyzer
-lspconfig.rust_analyzer.setup({
+vim.lsp.config('rust_analyzer', {
   on_attach = handlers.on_attach,
   capabilities = handlers.capabilities,
   settings = {
@@ -30,3 +29,4 @@ lspconfig.rust_analyzer.setup({
     }
   },
 })
+vim.lsp.enable('rust_analyzer')
