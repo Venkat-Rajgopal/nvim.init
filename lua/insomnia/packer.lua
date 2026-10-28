@@ -109,4 +109,7 @@ return require('packer').startup(function(use)
 
 use { 'windwp/nvim-autopairs' }
 
+  -- launch page
+  use { 'goolord/alpha-nvim', requires = 'nvim-tree/nvim-web-devicons' }
+
 end)
