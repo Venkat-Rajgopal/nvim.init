@@ -35,6 +35,15 @@ Clone this repo in `.config/` dir and clone it as `nvim` dir. For the first time
 
 `<leader>` is `Space`.
 
+- [Basics](#basics)
+- [Move](#move)
+- [Select, copy, paste, delete](#select-copy-paste-delete)
+- [Search and replace](#search-and-replace)
+- [Windows and buffers](#windows-and-buffers)
+- [Custom shortcuts](#custom-shortcuts)
+- [LSP shortcuts](#lsp-shortcuts)
+- [Completion (nvim-cmp)](#completion-nvim-cmp)
+
 ### Basics
 
 | Keys | Mode | Action |
