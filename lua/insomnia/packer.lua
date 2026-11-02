@@ -37,6 +37,7 @@ return require('packer').startup(function(use)
   use { "catppuccin/nvim", as = "catppuccin" }
   -- master branch keeps the nvim-treesitter.configs API; main is a breaking rewrite
   use { 'nvim-treesitter/nvim-treesitter', branch = 'master', run = ':TSUpdate' }
+  use { 'lukas-reineke/indent-blankline.nvim' }
   use( "nvim-tree/nvim-web-devicons" )
 
   -- tree
