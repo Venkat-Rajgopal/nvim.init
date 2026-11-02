@@ -19,22 +19,141 @@
 Custom Neo Vim Configurations
 
 ## Requirements 
-Requires standard neo-vim installed. In Mac you can do;
+Requires Neovim **0.12+**, `git`, a C compiler, `tree-sitter-cli` (nvim-treesitter's main branch uses it to build parsers) and `ripgrep` (for `live_grep`).
+
+### macOS
 
 ```shell
-brew install neo-vim
+brew install neovim tree-sitter-cli ripgrep
+xcode-select --install         # C compiler, if you don't have one yet
 ```
-Aditionally, `live_grep` requires `ripgrep` to be installed. `brew install ripgrep`. 
+
+### Linux (Debian, Ubuntu, Raspberry Pi OS)
+
+The Neovim package in `apt` is too old, so use the official release build. It is available for `x86_64` and `arm64`. On a Raspberry Pi this needs the **64-bit** Raspberry Pi OS; on 32-bit you would have to build Neovim from source.
+
+```shell
+# Build tools and helpers (unzip/curl are also used by Mason)
+sudo apt update
+sudo apt install -y git build-essential curl unzip ripgrep
+
+# Neovim: pick the archive for your CPU
+ARCH=$(uname -m)                       # x86_64 or aarch64
+[ "$ARCH" = "aarch64" ] && ARCH=arm64
+curl -LO "https://github.com/neovim/neovim/releases/latest/download/nvim-linux-${ARCH}.tar.gz"
+sudo rm -rf /opt/nvim-linux-${ARCH}
+sudo tar -C /opt -xzf nvim-linux-${ARCH}.tar.gz
+sudo ln -sf /opt/nvim-linux-${ARCH}/bin/nvim /usr/local/bin/nvim
+nvim --version                         # should print 0.12 or newer
+
+# tree-sitter CLI (the apt version is too old). Either:
+npm install -g tree-sitter-cli         # needs Node.js
+# or
+cargo install --locked tree-sitter-cli # needs Rust (rustup.rs); slow on a Pi
+```
+
+To upgrade Neovim later on Linux, run the same Neovim commands again.
+
+### Fonts
+
+Icons in the file tree, statusline and dashboard need a [Nerd Font](https://www.nerdfonts.com/) set as your terminal font. On Linux that is the font of the terminal you connect from; on a Pi over SSH, it's the font on your laptop's terminal.
   
 ## Installation instructions
-Clone this repo in `.config/` dir and clone it as `nvim` dir. For the first time you, invoke `:PackerSync` to sync all packages. 
+Clone this repo as the `nvim` dir inside `~/.config/`:
+
+```shell
+git clone git@github.com:Venkat-Rajgopal/nvim.init.git ~/.config/nvim
+# or over HTTPS, if the machine (e.g. a Pi) has no GitHub SSH key:
+git clone https://github.com/Venkat-Rajgopal/nvim.init.git ~/.config/nvim
+```
+
+Start `nvim`. On first launch lazy.nvim installs itself and every plugin, and the treesitter parsers are built. To do the install without opening the UI:
+
+```shell
+nvim --headless "+Lazy! sync" +qa
+```
 
 :rocket: That's it. Good to go.
+
+## Plugin management (lazy.nvim)
+
+Plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim).
+
+| Path | What it is |
+| --- | --- |
+| `lua/insomnia/lazy.lua` | Bootstraps and sets up lazy.nvim |
+| `lua/plugins/*.lua` | Plugin specs, one file per area (`ui`, `editor`, `telescope`, `lsp`, ...) |
+| `lazy-lock.json` | Pinned plugin versions. Commit it. |
+
+### Commands
+
+| Command | Action |
+| --- | --- |
+| `:Lazy` | Open the lazy.nvim window |
+| `:Lazy sync` | Install missing, update, and clean. Run this when unsure. |
+| `:Lazy update` | Update plugins and rewrite `lazy-lock.json` |
+| `:Lazy install` | Install missing plugins only |
+| `:Lazy clean` | Remove plugins no longer in any spec |
+| `:Lazy restore` | Reset all plugins to the versions in `lazy-lock.json` |
+| `:Lazy check` | Check for updates without installing them |
+| `:Lazy log` | Show recent commits of installed plugins |
+| `:Lazy profile` | Show startup time per plugin |
+| `:Lazy health` | Same as `:checkhealth lazy` |
+| `:Lazy build <plugin>` | Re-run a plugin's build step (e.g. `markdown-preview.nvim`) |
+| `:Lazy load <plugin>` | Load a lazy-loaded plugin now |
+| `:Lazy reload <plugin>` | Reload a plugin after changing its config |
+
+Keys inside the `:Lazy` window: `I` install, `U` update, `S` sync, `X` clean, `C` check, `L` log, `R` restore, `P` profile, `D` debug, `?` help, `q` close. Press `Enter` on a plugin for its details.
+
+### Workflow
+
+- **Update:** `:Lazy update`, try things out, then commit `lazy-lock.json`.
+- **Roll back a bad update:** `git checkout lazy-lock.json`, then `:Lazy restore`.
+- **Add a plugin:** add a spec to a file in `lua/plugins/` and restart. It installs automatically.
+- **Remove a plugin:** delete its spec, restart, then `:Lazy clean`.
+
+A minimal spec, loaded only when needed:
+
+```lua
+-- lua/plugins/example.lua
+return {
+  {
+    "author/plugin.nvim",
+    event = "VeryLazy",            -- or: cmd = "Cmd", ft = "python", keys = { ... }
+    keys = {
+      { "<leader>x", "<cmd>Cmd<CR>", desc = "Do the thing" },
+    },
+    opts = {},                     -- passed to require("plugin").setup(opts)
+  },
+}
+```
+
+### Treesitter
+
+Parsers are listed in `lua/plugins/treesitter.lua`.
+
+| Command | Action |
+| --- | --- |
+| `:TSInstall <lang>` | Install a parser |
+| `:TSUpdate` | Update all parsers |
+| `:TSUninstall <lang>` | Remove a parser |
+| `:InspectTree` | Show the syntax tree of the current buffer |
+| `:checkhealth nvim-treesitter` | Check the CLI, compiler, and installed parsers |
+
+### Health checks
+
+| Command | Checks |
+| --- | --- |
+| `:checkhealth lazy` | lazy.nvim setup |
+| `:checkhealth nvim-treesitter` | Treesitter requirements and parsers |
+| `:checkhealth vim.lsp` | Attached language servers |
+| `:Mason` | Installed LSP servers and tools |
 
 ## Key strokes
 
 `<leader>` is `Space`.
 
+- [Plugin management (lazy.nvim)](#plugin-management-lazynvim)
 - [Basics](#basics)
 - [Move](#move)
 - [Select, copy, paste, delete](#select-copy-paste-delete)
@@ -116,12 +235,13 @@ Clone this repo in `.config/` dir and clone it as `nvim` dir. For the first time
 | Keys | Action | Defined in |
 | --- | --- | --- |
 | `<leader>pv` | Open netrw file explorer | `lua/insomnia/remap.lua` |
-| `<leader>e` | Toggle file tree | `after/plugin/nvimtree-config.lua` |
-| `<leader>tt` | Switch focus between file tree and editor | `after/plugin/nvimtree-config.lua` |
-| `<leader>gs` | Git status (fugitive) | `after/plugin/fugitive.lua` |
-| `<leader>pf` | Telescope: find files | `after/plugin/telescope.lua` |
-| `Ctrl-p` | Telescope: git files | `after/plugin/telescope.lua` |
-| `<leader>ps` | Telescope: live grep (needs `ripgrep`) | `after/plugin/telescope.lua` |
+| `<leader>e` | Toggle file tree | `lua/plugins/nvim-tree.lua` |
+| `<leader>tt` | Switch focus between file tree and editor | `lua/plugins/nvim-tree.lua` |
+| `<leader>gs` | Git status (fugitive) | `lua/plugins/editor.lua` |
+| `<leader>pf` | Telescope: find files | `lua/plugins/telescope.lua` |
+| `Ctrl-p` | Telescope: git files | `lua/plugins/telescope.lua` |
+| `<leader>ps` | Telescope: live grep (needs `ripgrep`) | `lua/plugins/telescope.lua` |
+| `Tab` / `Shift-Tab` | Next / previous buffer (bufferline) | `lua/plugins/ui.lua` |
 | `<leader>mp` | Markdown preview start (markdown files only) | `lua/insomnia/markdown.lua` |
 | `<leader>ms` | Markdown preview stop (markdown files only) | `lua/insomnia/markdown.lua` |
 
