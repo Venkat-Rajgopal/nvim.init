@@ -61,6 +61,6 @@ M.on_attach = function(client, bufnr)
 end
 
 -- Configure autocompletion
-M.capabilities = require("cmp_nvim_lsp").default_capabilities()
+M.capabilities = require("blink.cmp").get_lsp_capabilities()
 
 return M

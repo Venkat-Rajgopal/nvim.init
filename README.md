@@ -81,8 +81,12 @@ Plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim).
 
 | Path | What it is |
 | --- | --- |
+| `init.lua` | Sets `<leader>` and loads `lua/insomnia` |
+| `lua/insomnia/options.lua` | Editor settings (`vim.opt`) |
+| `lua/insomnia/remap.lua` | Global keymaps |
 | `lua/insomnia/lazy.lua` | Bootstraps and sets up lazy.nvim |
-| `lua/plugins/*.lua` | Plugin specs, one file per area (`ui`, `editor`, `telescope`, `lsp`, ...) |
+| `lua/insomnia/lsp/` | Language server setup (Python, Rust, Markdown) |
+| `lua/plugins/*.lua` | Plugin specs, one file per area (`ui`, `editor`, `telescope`, `completion`, `lsp`, ...) |
 | `lazy-lock.json` | Pinned plugin versions. Commit it. |
 
 ### Commands
@@ -147,6 +151,7 @@ Parsers are listed in `lua/plugins/treesitter.lua`.
 | `:checkhealth lazy` | lazy.nvim setup |
 | `:checkhealth nvim-treesitter` | Treesitter requirements and parsers |
 | `:checkhealth vim.lsp` | Attached language servers |
+| `:checkhealth blink.cmp` | Completion setup and fuzzy matcher binary |
 | `:Mason` | Installed LSP servers and tools |
 
 ## Key strokes
@@ -154,6 +159,7 @@ Parsers are listed in `lua/plugins/treesitter.lua`.
 `<leader>` is `Space`.
 
 - [Plugin management (lazy.nvim)](#plugin-management-lazynvim)
+- [Editor options](#editor-options)
 - [Basics](#basics)
 - [Move](#move)
 - [Select, copy, paste, delete](#select-copy-paste-delete)
@@ -161,7 +167,25 @@ Parsers are listed in `lua/plugins/treesitter.lua`.
 - [Windows and buffers](#windows-and-buffers)
 - [Custom shortcuts](#custom-shortcuts)
 - [LSP shortcuts](#lsp-shortcuts)
-- [Completion (nvim-cmp)](#completion-nvim-cmp)
+- [Completion (blink.cmp)](#completion-blinkcmp)
+
+### Editor options
+
+Set in `lua/insomnia/options.lua`. The ones you'll notice:
+
+| Option | Effect |
+| --- | --- |
+| `number` + `relativenumber` | Absolute number on the cursor line, relative elsewhere (use with `5j`, `3k`, ...) |
+| `expandtab`, `shiftwidth=4` | Indent with 4 spaces |
+| `ignorecase` + `smartcase` | `/foo` matches any case, `/Foo` matches exactly |
+| `undofile` | Undo history survives closing the file |
+| `splitright` + `splitbelow` | `:vsp` opens right, `:sp` opens below |
+| `scrolloff=8` | Keeps 8 lines visible above / below the cursor |
+| `wrap=false` | Long lines don't wrap |
+| `mouse=a` | Mouse works in all modes |
+| clipboard not shared | Use `<leader>y` to copy to the system clipboard |
+
+Check any option with `:set <name>?`, e.g. `:set shiftwidth?`.
 
 ### Basics
 
@@ -266,13 +290,27 @@ Defined in `lua/insomnia/lsp/handlers.lua` and set when a server attaches to a b
 | `[d` / `]d` | Previous / next diagnostic |
 | `<leader>q` | Put diagnostics in location list |
 
-### Completion (nvim-cmp)
+### Completion (blink.cmp)
+
+Configured in `lua/plugins/completion.lua` with [blink.cmp](https://github.com/saghen/blink.cmp). The menu opens while you type in insert mode and on the `:` command line.
 
 | Keys | Action |
 | --- | --- |
-| `Tab` / `Shift-Tab` | Next / previous item, or expand and jump in snippets |
-| `Enter` | Confirm selected item |
-| `Ctrl-Space` | Open completion menu |
-| `Ctrl-e` | Close completion menu |
+| `Tab` / `Shift-Tab` | Next / previous item; inside a snippet, jump to the next / previous field |
+| `Enter` | Accept the selected item, or the first one if none is selected |
+| `Ctrl-Space` | Open the menu, or toggle the documentation window |
+| `Ctrl-e` | Close the menu |
 | `Ctrl-b` / `Ctrl-f` | Scroll documentation up / down |
+
+Sources, in priority order:
+
+| Source | Gives you |
+| --- | --- |
+| `lazydev` | Neovim Lua API (`vim.api`, `vim.uv`, ...), in Lua files only |
+| `lsp` | Language server suggestions |
+| `path` | File paths, after typing `./`, `../`, `~/` or `/` |
+| `snippets` | [friendly-snippets](https://github.com/rafamadriz/friendly-snippets), e.g. `def`, `class`, `fn`, `for` |
+| `buffer` | Words from open buffers |
+
+To turn off `:` command-line completion, set `cmdline = { enabled = false }` in `lua/plugins/completion.lua`.
 

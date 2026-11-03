@@ -1,5 +1,5 @@
--- Step 1 only ports these from packer; lua/insomnia/lsp and lua/insomnia/completion
--- still require them right after lazy.setup(), so they must load eagerly for now.
+-- Step 1 only ports these from packer; lua/insomnia/lsp still requires them
+-- right after lazy.setup(), so they must load eagerly for now.
 return {
   {
     "neovim/nvim-lspconfig",
@@ -11,23 +11,6 @@ return {
 
       -- Useful status updates for LSP
       "j-hui/fidget.nvim",
-
-      -- Additional lua configuration, makes nvim stuff amazing
-      "folke/neodev.nvim",
-    },
-  },
-
-  -- Autocompletion
-  {
-    "hrsh7th/nvim-cmp",
-    lazy = false,
-    dependencies = {
-      "hrsh7th/cmp-nvim-lsp",
-      "hrsh7th/cmp-buffer",
-      "hrsh7th/cmp-path",
-      "hrsh7th/cmp-cmdline",
-      "L3MON4D3/LuaSnip",
-      "saadparwaiz1/cmp_luasnip",
     },
   },
 
