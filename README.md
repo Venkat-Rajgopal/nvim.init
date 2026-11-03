@@ -273,7 +273,7 @@ Inside a Telescope prompt: `Ctrl-n` / `Ctrl-p` move down / up, `Enter` open, `Ct
 
 ### LSP shortcuts
 
-Defined in `lua/insomnia/lsp/handlers.lua` and set when a server attaches to a buffer. Currently only `rust_analyzer` and `marksman` pass `on_attach`, so Python (`pyright`) gets Neovim's built-in LSP defaults instead (`grn` rename, `gra` code action, `grr` references, `gri` implementation, `K` hover).
+Set in `lua/insomnia/lsp/handlers.lua` for every language server when it attaches to a buffer.
 
 | Keys | Action |
 | --- | --- |
@@ -284,11 +284,41 @@ Defined in `lua/insomnia/lsp/handlers.lua` and set when a server attaches to a b
 | `K` | Hover documentation |
 | `Ctrl-k` | Signature help |
 | `<leader>rn` | Rename symbol |
-| `<leader>ca` | Code action |
-| `<leader>f` | Show diagnostics float for current line |
-| `gl` | Show diagnostics float (rounded border) |
-| `[d` / `]d` | Previous / next diagnostic |
+| `<leader>ca` | Code action (e.g. ruff fixes, organize imports) |
+| `gl` | Show diagnostics for the current line |
+| `[d` / `]d` | Previous / next diagnostic (opens the float) |
 | `<leader>q` | Put diagnostics in location list |
+| `Ctrl-o` | Jump back after `gd` / `gi` |
+
+Neovim's built-in LSP keys also work: `grn` rename, `gra` code action, `grr` references, `gri` implementation, `gO` document symbols, `Ctrl-s` signature help in insert mode. Because `gr` is mapped too, Neovim waits briefly after `gr` to see if you meant one of these.
+
+#### Language servers
+
+Installed by Mason (`:Mason`) and enabled in `lua/insomnia/lsp/`.
+
+| Language | Server | File |
+| --- | --- | --- |
+| Python | `pyright` (types, hover, navigation) + `ruff` (lint, import sorting, fixes) | `lsp/python.lua` |
+| Rust | `rust_analyzer` (clippy on save), **from rustup, not Mason**: `rustup component add rust-analyzer` | `lsp/rust.lua` |
+| Markdown | `marksman` | `lsp/markdown.lua` |
+| Lua | `lua_ls` (+ lazydev for Neovim API types) | `lsp/lua.lua` |
+| JSON | `jsonls` (validation) | `lsp/json.lua` |
+
+**Python uses uv only.** Pyright picks the interpreter in this order:
+
+1. `$VIRTUAL_ENV`, i.e. a venv you activated (`source .venv/bin/activate`) or started nvim under (`uv run nvim`)
+2. `.venv/bin/python` in the project root (what `uv venv` / `uv sync` create)
+3. the system `python3`
+
+So for a new project: `uv init && uv sync`, then open nvim in that folder.
+
+To add a language: add its server to `ensure_installed` in `lua/plugins/lsp.lua`, create `lua/insomnia/lsp/<lang>.lua` with `vim.lsp.config(...)` and `vim.lsp.enable(...)`, and require it from `lua/insomnia/lsp/init.lua`.
+
+| Command | Action |
+| --- | --- |
+| `:checkhealth vim.lsp` | Servers attached to the buffer, and their settings |
+| `:lsp restart` | Restart servers for the buffer (e.g. after `uv sync`) |
+| `:Mason` | Install / update servers (`i` install, `u` update, `X` uninstall) |
 
 ### Completion (blink.cmp)
 
