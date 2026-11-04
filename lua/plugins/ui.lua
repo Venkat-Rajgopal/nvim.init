@@ -8,7 +8,7 @@ return {
     event = "VeryLazy",
     opts = {
       options = {
-        theme = "catppuccin-macchiato",
+        theme = "auto", -- follows the active colorscheme
         icons_enabled = true,
         component_separators = "|",
         section_separators = "",

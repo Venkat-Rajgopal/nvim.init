@@ -86,6 +86,7 @@ Plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim).
 | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | `init.lua`                 | Sets `<leader>` and loads `lua/insomnia`                                                                                          |
 | `lua/insomnia/options.lua` | Editor settings (`vim.opt`)                                                                                                       |
+| `lua/insomnia/theme.lua`   | Restores the last chosen colorscheme                                                                                              |
 | `lua/insomnia/remap.lua`   | Global keymaps                                                                                                                    |
 | `lua/insomnia/lazy.lua`    | Bootstraps and sets up lazy.nvim                                                                                                  |
 | `lua/insomnia/lsp/`        | Language server setup (Python, Rust, Markdown)                                                                                    |
@@ -174,6 +175,7 @@ Parsers are listed in `lua/plugins/treesitter.lua`.
 - [LSP shortcuts](#lsp-shortcuts)
 - [Completion (blink.cmp)](#completion-blinkcmp)
 - [Formatting and linting](#formatting-and-linting)
+- [Themes](#themes)
 
 ### Editor options
 
@@ -302,6 +304,7 @@ Other:
 | `<leader>pv`        | Open netrw file explorer                       | `lua/insomnia/remap.lua`     |
 | `Tab` / `Shift-Tab` | Next / previous buffer (bufferline)            | `lua/plugins/ui.lua`         |
 | `<leader>cf`        | Format buffer, or the selection in visual mode | `lua/plugins/formatting.lua` |
+| `<leader>th`        | Theme picker (live preview, remembered)        | `lua/plugins/telescope.lua`  |
 | `<leader>mp`        | Markdown preview start (markdown files only)   | `lua/insomnia/markdown.lua`  |
 | `<leader>ms`        | Markdown preview stop (markdown files only)    | `lua/insomnia/markdown.lua`  |
 
@@ -405,3 +408,25 @@ Linting comes from the language servers (pyright, ruff, rust-analyzer, lua_ls, j
 | `:Mason`       | Install / update `stylua`, `prettier`, `markdownlint` (installed automatically on first start) |
 
 To add a formatter: install it (`:Mason` or your package manager) and add it to `formatters_by_ft` in `lua/plugins/formatting.lua`.
+
+### Themes
+
+Press `<leader>th` to pick a colorscheme. Moving through the list previews each one live; `Enter` keeps it, `Esc` goes back. The choice is saved to `~/.local/share/nvim/last_theme` and restored on the next start. The statusline (`theme = "auto"`) follows the active theme; the dashboard flame keeps its own colours.
+
+| Theme                                                          | Variants                                    | Style                   |
+| -------------------------------------------------------------- | ------------------------------------------- | ----------------------- |
+| [catppuccin](https://github.com/catppuccin/nvim) (default)     | `-macchiato`, `-mocha`, `-frappe`, `-latte` | Soft pastel             |
+| [tokyonight](https://github.com/folke/tokyonight.nvim)         | `-night`, `-storm`, `-moon`, `-day`         | Cool blues and purples  |
+| [kanagawa](https://github.com/rebelot/kanagawa.nvim)           | `-wave`, `-dragon`, `-lotus`                | Muted, Hokusai-inspired |
+| [rose-pine](https://github.com/rose-pine/neovim)               | `-main`, `-moon`, `-dawn`                   | Low contrast, warm      |
+| [cyberdream](https://github.com/scottmckendry/cyberdream.nvim) | `-light`, `-muted`                          | High contrast, neon     |
+| [everforest](https://github.com/sainnhe/everforest)            |                                             | Green, easy on the eyes |
+| [nordic](https://github.com/AlexvZyl/nordic.nvim)              |                                             | Darker, warmer Nord     |
+
+Light variants: `catppuccin-latte`, `tokyonight-day`, `kanagawa-lotus`, `rose-pine-dawn`, `cyberdream-light`.
+
+Only catppuccin loads at startup. The others are loaded by lazy.nvim the first time you pick them, so they don't slow startup.
+
+- **Switch from the command line:** `:colorscheme tokyonight-moon` (also saved).
+- **Back to the default:** `:colorscheme catppuccin-macchiato`, or delete `~/.local/share/nvim/last_theme`.
+- **Add a theme:** add `{ "author/theme.nvim", lazy = true }` to `lua/plugins/colorscheme.lua` and restart; it shows up in the picker.

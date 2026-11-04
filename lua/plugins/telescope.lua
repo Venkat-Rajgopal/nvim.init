@@ -16,6 +16,11 @@ return {
       { "<leader>fk", function() require("telescope.builtin").keymaps() end, desc = "Keymaps" },
       { "<leader>fd", function() require("telescope.builtin").diagnostics() end, desc = "Diagnostics" },
       { "<leader>fs", function() require("telescope.builtin").lsp_document_symbols() end, desc = "Symbols in file" },
+      {
+        "<leader>th",
+        function() require("telescope.builtin").colorscheme({ enable_preview = true, ignore_builtins = true }) end,
+        desc = "Theme picker",
+      },
     },
     opts = {
       defaults = {
