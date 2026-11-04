@@ -12,6 +12,12 @@ return {
           treesitter = true,
           telescope = true,
           nvimtree = true,
+          blink_cmp = true,
+          gitsigns = true,
+          which_key = true,
+          fidget = true,
+          mason = true,
+          indent_blankline = { enabled = true },
           -- add more integrations as needed
         },
       })

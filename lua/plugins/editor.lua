@@ -7,15 +7,6 @@ return {
     },
   },
 
-  -- git integration
-  {
-    "tpope/vim-fugitive",
-    cmd = { "Git", "G" },
-    keys = {
-      { "<leader>gs", vim.cmd.Git, desc = "Git status (fugitive)" },
-    },
-  },
-
   -- markdown (globals are set in lua/insomnia/markdown.lua)
   {
     "preservim/vim-markdown",

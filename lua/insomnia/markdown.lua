@@ -25,7 +25,7 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = "markdown",
   callback = function()
     -- Local keybindings for markdown files
-    vim.api.nvim_buf_set_keymap(0, "n", "<leader>mp", ":MarkdownPreview<CR>", { noremap = true, silent = true })
-    vim.api.nvim_buf_set_keymap(0, "n", "<leader>ms", ":MarkdownPreviewStop<CR>", { noremap = true, silent = true })
+    vim.keymap.set("n", "<leader>mp", "<cmd>MarkdownPreview<CR>", { buffer = true, desc = "Markdown preview" })
+    vim.keymap.set("n", "<leader>ms", "<cmd>MarkdownPreviewStop<CR>", { buffer = true, desc = "Stop markdown preview" })
   end,
 })

@@ -82,16 +82,16 @@ nvim --headless "+Lazy! sync" +qa
 
 Plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim).
 
-| Path                       | What it is                                                                                                    |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| `init.lua`                 | Sets `<leader>` and loads `lua/insomnia`                                                                      |
-| `lua/insomnia/options.lua` | Editor settings (`vim.opt`)                                                                                   |
-| `lua/insomnia/remap.lua`   | Global keymaps                                                                                                |
-| `lua/insomnia/lazy.lua`    | Bootstraps and sets up lazy.nvim                                                                              |
-| `lua/insomnia/lsp/`        | Language server setup (Python, Rust, Markdown)                                                                |
-| `lua/plugins/*.lua`        | Plugin specs, one file per area (`ui`, `editor`, `telescope`, `completion`, `lsp`, `formatting`, `lint`, ...) |
-| `.stylua.toml`             | Lua formatting style for this config (2 spaces, 120 columns)                                                  |
-| `lazy-lock.json`           | Pinned plugin versions. Commit it.                                                                            |
+| Path                       | What it is                                                                                                                        |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `init.lua`                 | Sets `<leader>` and loads `lua/insomnia`                                                                                          |
+| `lua/insomnia/options.lua` | Editor settings (`vim.opt`)                                                                                                       |
+| `lua/insomnia/remap.lua`   | Global keymaps                                                                                                                    |
+| `lua/insomnia/lazy.lua`    | Bootstraps and sets up lazy.nvim                                                                                                  |
+| `lua/insomnia/lsp/`        | Language server setup (Python, Rust, Markdown)                                                                                    |
+| `lua/plugins/*.lua`        | Plugin specs, one file per area (`ui`, `editor`, `git`, `telescope`, `which-key`, `completion`, `lsp`, `formatting`, `lint`, ...) |
+| `.stylua.toml`             | Lua formatting style for this config (2 spaces, 120 columns)                                                                      |
+| `lazy-lock.json`           | Pinned plugin versions. Commit it.                                                                                                |
 
 ### Commands
 
@@ -262,21 +262,48 @@ Check any option with `:set <name>?`, e.g. `:set shiftwidth?`.
 
 ### Custom shortcuts
 
-| Keys                | Action                                         | Defined in                   |
-| ------------------- | ---------------------------------------------- | ---------------------------- |
-| `<leader>pv`        | Open netrw file explorer                       | `lua/insomnia/remap.lua`     |
-| `<leader>e`         | Toggle file tree                               | `lua/plugins/nvim-tree.lua`  |
-| `<leader>tt`        | Switch focus between file tree and editor      | `lua/plugins/nvim-tree.lua`  |
-| `<leader>gs`        | Git status (fugitive)                          | `lua/plugins/editor.lua`     |
-| `<leader>pf`        | Telescope: find files                          | `lua/plugins/telescope.lua`  |
-| `Ctrl-p`            | Telescope: git files                           | `lua/plugins/telescope.lua`  |
-| `<leader>ps`        | Telescope: live grep (needs `ripgrep`)         | `lua/plugins/telescope.lua`  |
-| `Tab` / `Shift-Tab` | Next / previous buffer (bufferline)            | `lua/plugins/ui.lua`         |
-| `<leader>mp`        | Markdown preview start (markdown files only)   | `lua/insomnia/markdown.lua`  |
-| `<leader>ms`        | Markdown preview stop (markdown files only)    | `lua/insomnia/markdown.lua`  |
-| `<leader>cf`        | Format buffer, or the selection in visual mode | `lua/plugins/formatting.lua` |
+Press `<leader>` (Space) and wait: [which-key](https://github.com/folke/which-key.nvim) pops up with every key that can follow, grouped (`c` code, `f` find, `g` git, `m` markdown, `p` project, `r` refactor, `t` toggle). It waits for you, so there is no time limit. The same works for `g`, `[`, `]`, `"` (registers) and `` ` `` (marks). `<leader>?` lists the mappings of the current buffer only.
+
+Find (Telescope, `lua/plugins/telescope.lua`, grep needs `ripgrep`):
+
+| Keys                        | Action                 |
+| --------------------------- | ---------------------- |
+| `<leader>ff` / `<leader>pf` | Find files             |
+| `Ctrl-p`                    | Git files              |
+| `<leader>fg` / `<leader>ps` | Grep in project        |
+| `<leader>fw`                | Grep word under cursor |
+| `<leader>fb`                | Open buffers           |
+| `<leader>fr`                | Recent files           |
+| `<leader>fs`                | Symbols in file (LSP)  |
+| `<leader>fd`                | Diagnostics            |
+| `<leader>fh`                | Help pages             |
+| `<leader>fk`                | Keymaps                |
 
 Inside a Telescope prompt: `Ctrl-n` / `Ctrl-p` move down / up, `Enter` open, `Ctrl-x` open in horizontal split, `Ctrl-v` open in vertical split, `Esc` close.
+
+Git (`lua/plugins/git.lua`). Changed lines are marked in the sign column by gitsigns.
+
+| Keys         | Action                                                               |
+| ------------ | -------------------------------------------------------------------- |
+| `]h` / `[h`  | Next / previous changed hunk                                         |
+| `<leader>gp` | Preview hunk (what changed)                                          |
+| `<leader>gr` | Reset hunk (undo the change)                                         |
+| `<leader>gb` | Blame line                                                           |
+| `<leader>tb` | Toggle inline blame on the current line                              |
+| `<leader>gd` | Diff file against the index                                          |
+| `<leader>gs` | Git status (fugitive): `s` stage, `u` unstage, `=` diff, `cc` commit |
+
+Other:
+
+| Keys                | Action                                         | Defined in                   |
+| ------------------- | ---------------------------------------------- | ---------------------------- |
+| `<leader>e`         | Toggle file tree                               | `lua/plugins/nvim-tree.lua`  |
+| `<leader>tt`        | Switch focus between file tree and editor      | `lua/plugins/nvim-tree.lua`  |
+| `<leader>pv`        | Open netrw file explorer                       | `lua/insomnia/remap.lua`     |
+| `Tab` / `Shift-Tab` | Next / previous buffer (bufferline)            | `lua/plugins/ui.lua`         |
+| `<leader>cf`        | Format buffer, or the selection in visual mode | `lua/plugins/formatting.lua` |
+| `<leader>mp`        | Markdown preview start (markdown files only)   | `lua/insomnia/markdown.lua`  |
+| `<leader>ms`        | Markdown preview stop (markdown files only)    | `lua/insomnia/markdown.lua`  |
 
 ### LSP shortcuts
 

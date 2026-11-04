@@ -32,6 +32,6 @@ opt.undofile = true
 
 -- Timing
 opt.updatetime = 250 -- Faster CursorHold (diagnostics, highlights)
-opt.timeoutlen = 400 -- Wait for mapped key sequences
+opt.timeoutlen = 1000 -- Wait for mapped key sequences (which-key waits on <leader> anyway)
 
 -- Clipboard is left unset on purpose: use <leader>y (lua/insomnia/remap.lua)
