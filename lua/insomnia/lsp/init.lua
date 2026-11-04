@@ -1,5 +1,6 @@
-require("insomnia.lsp.mason")
+require("insomnia.lsp.handlers") -- diagnostics, capabilities, LspAttach keymaps
 require("insomnia.lsp.python")
-require("insomnia.lsp.handlers")
-require("insomnia.lsp.markdown")
 require("insomnia.lsp.rust")
+require("insomnia.lsp.markdown")
+require("insomnia.lsp.lua")
+require("insomnia.lsp.json")

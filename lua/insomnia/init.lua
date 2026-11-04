@@ -1,5 +1,6 @@
-require("insomnia.remap")     -- <leader> mappings
-require("insomnia.packer")    -- plugin setup
-require("insomnia.lsp")       -- LSP configuration
-require("insomnia.completion") -- completion setup
-require("insomnia.markdown")   -- Markdown configuration
+require("insomnia.options") -- vim.opt settings
+require("insomnia.remap") -- <leader> mappings
+require("insomnia.markdown") -- Markdown globals (must be set before vim-markdown loads)
+require("insomnia.lazy") -- plugin setup
+require("insomnia.theme").load() -- last chosen colorscheme
+require("insomnia.lsp") -- LSP configuration
