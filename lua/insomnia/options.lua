@@ -1,7 +1,7 @@
 local opt = vim.opt
 
 -- Line numbers
-opt.number = true         -- Enable line numbers
+opt.number = true -- Enable line numbers
 opt.relativenumber = true -- Enable relative line numbers
 
 -- Indentation
@@ -13,7 +13,7 @@ opt.smartindent = true
 
 -- Search
 opt.ignorecase = true -- Case-insensitive...
-opt.smartcase = true  -- ...unless the pattern has a capital letter
+opt.smartcase = true -- ...unless the pattern has a capital letter
 
 -- UI
 opt.termguicolors = true

@@ -6,18 +6,18 @@ vim.g.vim_markdown_math = 1
 vim.g.vim_markdown_frontmatter = 1
 vim.g.vim_markdown_strikethrough = 1
 vim.g.vim_markdown_autowrite = 1
-vim.g.vim_markdown_edit_url_in = 'tab'
+vim.g.vim_markdown_edit_url_in = "tab"
 vim.g.vim_markdown_follow_anchor = 1
 
 -- Markdown preview settings
 vim.g.mkdp_auto_start = 0
 vim.g.mkdp_auto_close = 1
 vim.g.mkdp_refresh_slow = 0
-vim.g.mkdp_browser = ''
+vim.g.mkdp_browser = ""
 vim.g.mkdp_preview_options = {
   maid = {
-    sequence = { useMaxWidth = true }
-  }
+    sequence = { useMaxWidth = true },
+  },
 }
 
 -- Custom Markdown keymaps

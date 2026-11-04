@@ -16,6 +16,21 @@ return {
         },
       },
     },
+    config = function(_, opts)
+      require("mason").setup(opts)
+
+      -- Formatters and linters (lua/plugins/formatting.lua, lua/plugins/lint.lua)
+      local tools = { "stylua", "prettier", "markdownlint" }
+      local registry = require("mason-registry")
+      registry.refresh(function()
+        for _, name in ipairs(tools) do
+          local pkg = registry.get_package(name)
+          if not pkg:is_installed() then
+            pkg:install()
+          end
+        end
+      end)
+    end,
   },
 
   {
@@ -24,11 +39,11 @@ return {
     dependencies = { "mason-org/mason.nvim", "neovim/nvim-lspconfig" },
     opts = {
       ensure_installed = {
-        "pyright",       -- Python types
-        "ruff",          -- Python lint
-        "marksman",      -- Markdown
-        "lua_ls",        -- Lua
-        "jsonls",        -- JSON
+        "pyright", -- Python types
+        "ruff", -- Python lint
+        "marksman", -- Markdown
+        "lua_ls", -- Lua
+        "jsonls", -- JSON
       },
       -- rust-analyzer comes from rustup instead (see lua/insomnia/lsp/rust.lua)
       -- Enabled explicitly in lua/insomnia/lsp/ instead
@@ -38,7 +53,4 @@ return {
 
   -- LSP progress messages
   { "j-hui/fidget.nvim", event = "LspAttach", opts = {} },
-
-  -- Formatting and linting (not configured yet; replaced by conform/nvim-lint in step 4)
-  { "nvimtools/none-ls.nvim", lazy = true, dependencies = { "nvim-lua/plenary.nvim" } },
 }

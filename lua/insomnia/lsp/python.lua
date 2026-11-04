@@ -17,9 +17,7 @@ end
 
 -- Pyright: types, hover, go-to-definition
 vim.lsp.config("pyright", {
-  before_init = function(_, config)
-    config.settings.python.pythonPath = get_python_path(config.root_dir)
-  end,
+  before_init = function(_, config) config.settings.python.pythonPath = get_python_path(config.root_dir) end,
   settings = {
     python = {
       analysis = {

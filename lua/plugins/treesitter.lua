@@ -1,6 +1,15 @@
 local parsers = {
-  "rust", "python", "c", "lua", "vim", "vimdoc", "query",
-  "markdown", "markdown_inline", "json", "toml",
+  "rust",
+  "python",
+  "c",
+  "lua",
+  "vim",
+  "vimdoc",
+  "query",
+  "markdown",
+  "markdown_inline",
+  "json",
+  "toml",
 }
 
 return {
