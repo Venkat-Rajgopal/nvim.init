@@ -20,7 +20,24 @@ return {
     lazy = false, -- main does not support lazy-loading
     build = ":TSUpdate",
     config = function()
-      require("nvim-treesitter").install(parsers)
+      -- Build only parsers that are missing, and only if the tree-sitter CLI exists;
+      -- otherwise every missing parser fails with "tree-sitter build … ENOENT"
+      local installed = require("nvim-treesitter.config").get_installed("parsers")
+      local missing = vim.tbl_filter(function(lang) return not vim.list_contains(installed, lang) end, parsers)
+
+      if #missing > 0 then
+        if vim.fn.executable("tree-sitter") == 1 then
+          require("nvim-treesitter").install(missing)
+        else
+          vim.notify(
+            "tree-sitter CLI not found; can't build parsers: "
+              .. table.concat(missing, ", ")
+              .. "\nInstall it: brew install tree-sitter-cli | npm i -g tree-sitter-cli"
+              .. " | cargo install --locked tree-sitter-cli",
+            vim.log.levels.WARN
+          )
+        end
+      end
 
       vim.api.nvim_create_autocmd("FileType", {
         group = vim.api.nvim_create_augroup("insomnia_treesitter", { clear = true }),

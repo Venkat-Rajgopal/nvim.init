@@ -149,6 +149,10 @@ Parsers are listed in `lua/plugins/treesitter.lua`.
 | `:InspectTree`                 | Show the syntax tree of the current buffer     |
 | `:checkhealth nvim-treesitter` | Check the CLI, compiler, and installed parsers |
 
+On startup, only missing parsers are built. If the `tree-sitter` CLI isn't installed, you get one warning listing the missing parsers instead of build errors; install the CLI (see [Requirements](#requirements)) and restart.
+
+**Troubleshooting** `Error during tree-sitter build … ENOENT`: run `tree-sitter --version` and `:checkhealth nvim-treesitter`. If the CLI is fine, the parser download probably failed (network); retry with `:TSInstall! <lang>`.
+
 ### Health checks
 
 | Command                        | Checks                                                 |
