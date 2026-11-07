@@ -21,6 +21,7 @@ local function split()
     env = { NVIM_TERMINAL_LAYOUT = "split" },
     win = {
       position = "bottom",
+      border = "none",
       height = 0.3,
       keys = { nav_h = nav("h"), nav_j = nav("j"), nav_k = nav("k"), nav_l = nav("l") },
     },
@@ -42,8 +43,9 @@ return {
     priority = 1000,
     lazy = false, -- recommended by snacks; modules stay off unless configured
     opts = {
+      styles = { lazygit = { border = "rounded" } },
       terminal = {
-        win = { position = "float" },
+        win = { position = "float", border = "rounded" }, -- snacks floats have no border by default
       },
     },
     keys = {

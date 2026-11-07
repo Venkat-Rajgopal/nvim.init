@@ -58,6 +58,14 @@ sudo rm /usr/local/bin/nvim && ~/.config/nvim/install.sh
 
 Icons in the file tree, statusline and dashboard need a [Nerd Font](https://www.nerdfonts.com/) set as your terminal font. On Linux that is the font of the terminal you connect from; on a Pi over SSH, it's the font on your laptop's terminal.
 
+Use a **Nerd Fonts v3** font. nvim-web-devicons uses v3 glyphs, so older patched fonts show blanks for some files (`.toml`, `.yaml`, `.css`, `.ipynb`). The `MesloLGS NF` font that powerlevel10k installs is one of these older fonts. Replace it with the current build, which still has the prompt glyphs:
+
+```sh
+brew install --cask font-meslo-lg-nerd-font
+```
+
+Then pick **MesloLGS Nerd Font Mono** in your terminal (iTerm: Settings → Profiles → Text → Font).
+
 ## Installation instructions
 
 On Linux, `install.sh` has already done this. On macOS, clone this repo as the `nvim` dir inside `~/.config/`:
@@ -479,6 +487,14 @@ If the last command failed, `exit` ends the shell with that error code and the w
 [lazygit](https://github.com/jesseduffield/lazygit) is a keyboard-driven git interface: status, branches, commits and stashes in panels, acted on with single keys. It's handy for staging individual lines, reviewing diffs as you stage, interactive rebases and merge conflicts.
 
 `<leader>gg` opens it in a float. It's optional, so install it first with `brew install lazygit`; without it you get a warning. Inside, `?` lists the keys and `q` quits.
+
+### Statusline and file tree
+
+The statusline (lualine, `lua/plugins/ui.lua`) is one bar across all splits with rounded separators. From left to right it shows: mode, git branch, diff counts (from gitsigns), diagnostics, the file path relative to the working directory, the attached language servers, filetype, and position. It is hidden on the dashboard.
+
+The file tree (`lua/plugins/nvim-tree.lua`) colours file names by git status, highlights open files and draws indent guides. `.git`, `node_modules`, `__pycache__` and `.DS_Store` are hidden; press `U` in the tree to show them.
+
+Floating windows (hover, diagnostics, completion, which-key, terminal, lazygit, Mason, lazy.nvim) use rounded borders.
 
 ### Themes
 
