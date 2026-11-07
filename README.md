@@ -21,40 +21,38 @@ Custom Neo Vim Configurations
 
 ## Requirements
 
-Requires Neovim **0.12+**, `git`, a C compiler, `tree-sitter-cli` (nvim-treesitter's main branch uses it to build parsers) and `ripgrep` (for `live_grep`).
+Requires Neovim **0.12+**, `git`, a C compiler, `tree-sitter-cli` (nvim-treesitter's main branch uses it to build parsers), `ripgrep` (for `live_grep`) and **Node.js 22+** with `npm` (Mason uses it to install `pyright`, `jsonls`, `prettier` and `markdownlint`; without it these are skipped with one warning on startup).
+
+On a **Raspberry Pi**, follow [README-pi.md](README-pi.md) instead: `install.sh` sets everything up, and the Pi uses `ty` rather than `pyright`.
 
 ### macOS
 
 ```shell
-brew install neovim tree-sitter-cli ripgrep
+brew install neovim tree-sitter-cli ripgrep node
 xcode-select --install         # C compiler, if you don't have one yet
 ```
 
-### Linux (Debian, Ubuntu, Raspberry Pi OS)
+### Linux (Debian, Ubuntu)
 
-The Neovim package in `apt` is too old, so use the official release build. It is available for `x86_64` and `arm64`. On a Raspberry Pi this needs the **64-bit** Raspberry Pi OS; on 32-bit you would have to build Neovim from source.
+On `apt` systems (`x86_64` or `arm64`), `install.sh` does the whole setup: it installs whatever is missing, puts the config in `~/.config/nvim`, installs the plugins and builds the parsers.
 
 ```shell
-# Build tools and helpers (unzip/curl are also used by Mason)
-sudo apt update
-sudo apt install -y git build-essential curl unzip ripgrep jq
-
-# Neovim: pick the archive for your CPU
-ARCH=$(uname -m)                       # x86_64 or aarch64
-[ "$ARCH" = "aarch64" ] && ARCH=arm64
-curl -LO "https://github.com/neovim/neovim/releases/latest/download/nvim-linux-${ARCH}.tar.gz"
-sudo rm -rf /opt/nvim-linux-${ARCH}
-sudo tar -C /opt -xzf nvim-linux-${ARCH}.tar.gz
-sudo ln -sf /opt/nvim-linux-${ARCH}/bin/nvim /usr/local/bin/nvim
-nvim --version                         # should print 0.12 or newer
-
-# tree-sitter CLI (the apt version is too old). Either:
-npm install -g tree-sitter-cli         # needs Node.js
-# or
-cargo install --locked tree-sitter-cli # needs Rust (rustup.rs); slow on a Pi
+sudo apt update && sudo apt install -y git
+git clone https://github.com/Venkat-Rajgopal/nvim.init.git ~/.config/nvim
+~/.config/nvim/install.sh
 ```
 
-To upgrade Neovim later on Linux, run the same Neovim commands again.
+To only see what's missing, without changing anything:
+
+```shell
+~/.config/nvim/install.sh --check
+```
+
+The script leaves a recent enough Neovim alone. To upgrade to the latest release later:
+
+```shell
+sudo rm /usr/local/bin/nvim && ~/.config/nvim/install.sh
+```
 
 ### Fonts
 
@@ -62,11 +60,11 @@ Icons in the file tree, statusline and dashboard need a [Nerd Font](https://www.
 
 ## Installation instructions
 
-Clone this repo as the `nvim` dir inside `~/.config/`:
+On Linux, `install.sh` has already done this. On macOS, clone this repo as the `nvim` dir inside `~/.config/`:
 
 ```shell
 git clone git@github.com:Venkat-Rajgopal/nvim.init.git ~/.config/nvim
-# or over HTTPS, if the machine (e.g. a Pi) has no GitHub SSH key:
+# or over HTTPS, if the machine has no GitHub SSH key:
 git clone https://github.com/Venkat-Rajgopal/nvim.init.git ~/.config/nvim
 ```
 
@@ -82,17 +80,19 @@ nvim --headless "+Lazy! sync" +qa
 
 Plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim).
 
-| Path                       | What it is                                                                                                                        |
-| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `init.lua`                 | Sets `<leader>` and loads `lua/insomnia`                                                                                          |
-| `lua/insomnia/options.lua` | Editor settings (`vim.opt`)                                                                                                       |
-| `lua/insomnia/theme.lua`   | Restores the last chosen colorscheme                                                                                              |
-| `lua/insomnia/remap.lua`   | Global keymaps                                                                                                                    |
-| `lua/insomnia/lazy.lua`    | Bootstraps and sets up lazy.nvim                                                                                                  |
-| `lua/insomnia/lsp/`        | Language server setup (Python, Rust, Markdown)                                                                                    |
-| `lua/plugins/*.lua`        | Plugin specs, one file per area (`ui`, `editor`, `git`, `telescope`, `which-key`, `completion`, `lsp`, `formatting`, `lint`, ...) |
-| `.stylua.toml`             | Lua formatting style for this config (2 spaces, 120 columns)                                                                      |
-| `lazy-lock.json`           | Pinned plugin versions. Commit it.                                                                                                |
+| Path                        | What it is                                                                                                                        |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `install.sh`                | Sets up Debian, Ubuntu and Raspberry Pi OS                                                                                        |
+| `init.lua`                  | Sets `<leader>` and loads `lua/insomnia`                                                                                          |
+| `lua/insomnia/options.lua`  | Editor settings (`vim.opt`)                                                                                                       |
+| `lua/insomnia/theme.lua`    | Restores the last chosen colorscheme                                                                                              |
+| `lua/insomnia/remap.lua`    | Global keymaps                                                                                                                    |
+| `lua/insomnia/platform.lua` | Detects the Raspberry Pi                                                                                                          |
+| `lua/insomnia/lazy.lua`     | Bootstraps and sets up lazy.nvim                                                                                                  |
+| `lua/insomnia/lsp/`         | Language server setup (Python, Rust, Markdown)                                                                                    |
+| `lua/plugins/*.lua`         | Plugin specs, one file per area (`ui`, `editor`, `git`, `telescope`, `which-key`, `completion`, `lsp`, `formatting`, `lint`, ...) |
+| `.stylua.toml`              | Lua formatting style for this config (2 spaces, 120 columns)                                                                      |
+| `lazy-lock.json`            | Pinned plugin versions. Commit it.                                                                                                |
 
 ### Commands
 
@@ -339,7 +339,7 @@ Installed by Mason (`:Mason`) and enabled in `lua/insomnia/lsp/`.
 
 | Language | Server                                                                                             | File               |
 | -------- | -------------------------------------------------------------------------------------------------- | ------------------ |
-| Python   | `pyright` (types, hover, navigation) + `ruff` (lint, import sorting, fixes)                        | `lsp/python.lua`   |
+| Python   | `pyright` (`ty` on the Pi: types, hover, navigation) + `ruff` (lint, import sorting, fixes)        | `lsp/python.lua`   |
 | Rust     | `rust_analyzer` (clippy on save), **from rustup, not Mason**: `rustup component add rust-analyzer` | `lsp/rust.lua`     |
 | Markdown | `marksman`                                                                                         | `lsp/markdown.lua` |
 | Lua      | `lua_ls` (+ lazydev for Neovim API types)                                                          | `lsp/lua.lua`      |
@@ -353,7 +353,7 @@ Installed by Mason (`:Mason`) and enabled in `lua/insomnia/lsp/`.
 
 So for a new project: `uv init && uv sync`, then open nvim in that folder.
 
-To add a language: add its server to `ensure_installed` in `lua/plugins/lsp.lua`, create `lua/insomnia/lsp/<lang>.lua` with `vim.lsp.config(...)` and `vim.lsp.enable(...)`, and require it from `lua/insomnia/lsp/init.lua`.
+To add a language: add its server to `servers` in `lua/plugins/lsp.lua` (or `npm_servers` if Mason installs it with npm), create `lua/insomnia/lsp/<lang>.lua` with `vim.lsp.config(...)` and `vim.lsp.enable(...)`, and require it from `lua/insomnia/lsp/init.lua`.
 
 | Command                | Action                                                            |
 | ---------------------- | ----------------------------------------------------------------- |

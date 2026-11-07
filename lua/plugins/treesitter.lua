@@ -27,7 +27,13 @@ return {
 
       if #missing > 0 then
         if vim.fn.executable("tree-sitter") == 1 then
-          require("nvim-treesitter").install(missing)
+          -- The Pi can run out of memory with a compiler per parser at once
+          local max_jobs = require("insomnia.platform").is_pi and 2 or nil
+          local task = require("nvim-treesitter").install(missing, { max_jobs = max_jobs })
+          -- Headless (install.sh): finish first, exiting mid-build leaves broken temp files
+          if #vim.api.nvim_list_uis() == 0 then
+            task:pwait(30 * 60 * 1000)
+          end
         else
           vim.notify(
             "tree-sitter CLI not found; can't build parsers: "

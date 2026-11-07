@@ -33,4 +33,13 @@ vim.lsp.config("pyright", {
 -- Ruff: linting, import sorting, quick fixes (hover is turned off in handlers.lua)
 vim.lsp.config("ruff", {})
 
-vim.lsp.enable({ "pyright", "ruff" })
+vim.lsp.enable("ruff")
+
+if require("insomnia.platform").is_pi then
+  -- ty replaces pyright on the Pi. It finds the interpreter by itself, in the same
+  -- order as get_python_path, and only checks open files by default.
+  vim.lsp.enable("ty")
+elseif vim.fn.executable("pyright-langserver") == 1 or vim.fn.executable("npm") == 1 then
+  -- Without npm, Mason can't install it (lua/plugins/lsp.lua): don't try to start it
+  vim.lsp.enable("pyright")
+end
