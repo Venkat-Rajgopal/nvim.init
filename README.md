@@ -80,19 +80,19 @@ nvim --headless "+Lazy! sync" +qa
 
 Plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim).
 
-| Path                        | What it is                                                                                                                        |
-| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `install.sh`                | Sets up Debian, Ubuntu and Raspberry Pi OS                                                                                        |
-| `init.lua`                  | Sets `<leader>` and loads `lua/insomnia`                                                                                          |
-| `lua/insomnia/options.lua`  | Editor settings (`vim.opt`)                                                                                                       |
-| `lua/insomnia/theme.lua`    | Restores the last chosen colorscheme                                                                                              |
-| `lua/insomnia/remap.lua`    | Global keymaps                                                                                                                    |
-| `lua/insomnia/platform.lua` | Detects the Raspberry Pi                                                                                                          |
-| `lua/insomnia/lazy.lua`     | Bootstraps and sets up lazy.nvim                                                                                                  |
-| `lua/insomnia/lsp/`         | Language server setup (Python, Rust, Markdown)                                                                                    |
-| `lua/plugins/*.lua`         | Plugin specs, one file per area (`ui`, `editor`, `git`, `telescope`, `which-key`, `completion`, `lsp`, `formatting`, `lint`, ...) |
-| `.stylua.toml`              | Lua formatting style for this config (2 spaces, 120 columns)                                                                      |
-| `lazy-lock.json`            | Pinned plugin versions. Commit it.                                                                                                |
+| Path                        | What it is                                                                                                                                    |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `install.sh`                | Sets up Debian, Ubuntu and Raspberry Pi OS                                                                                                    |
+| `init.lua`                  | Sets `<leader>` and loads `lua/insomnia`                                                                                                      |
+| `lua/insomnia/options.lua`  | Editor settings (`vim.opt`)                                                                                                                   |
+| `lua/insomnia/theme.lua`    | Restores the last chosen colorscheme                                                                                                          |
+| `lua/insomnia/remap.lua`    | Global keymaps                                                                                                                                |
+| `lua/insomnia/platform.lua` | Detects the Raspberry Pi                                                                                                                      |
+| `lua/insomnia/lazy.lua`     | Bootstraps and sets up lazy.nvim                                                                                                              |
+| `lua/insomnia/lsp/`         | Language server setup (Python, Rust, Markdown)                                                                                                |
+| `lua/plugins/*.lua`         | Plugin specs, one file per area (`ui`, `editor`, `git`, `telescope`, `which-key`, `completion`, `lsp`, `formatting`, `lint`, `terminal`, ...) |
+| `.stylua.toml`              | Lua formatting style for this config (2 spaces, 120 columns)                                                                                  |
+| `lazy-lock.json`            | Pinned plugin versions. Commit it.                                                                                                            |
 
 ### Commands
 
@@ -179,6 +179,8 @@ On startup, only missing parsers are built. If the `tree-sitter` CLI isn't insta
 - [LSP shortcuts](#lsp-shortcuts)
 - [Completion (blink.cmp)](#completion-blinkcmp)
 - [Formatting and linting](#formatting-and-linting)
+- [Terminal](#terminal)
+- [Moving between terminal and editor](#moving-between-terminal-and-editor)
 - [Themes](#themes)
 
 ### Editor options
@@ -412,6 +414,71 @@ Linting comes from the language servers (pyright, ruff, rust-analyzer, lua_ls, j
 | `:Mason`       | Install / update `stylua`, `prettier`, `markdownlint` (installed automatically on first start) |
 
 To add a formatter: install it (`:Mason` or your package manager) and add it to `formatters_by_ft` in `lua/plugins/formatting.lua`.
+
+### Terminal
+
+Terminals come from [snacks.nvim](https://github.com/folke/snacks.nvim) (`lua/plugins/terminal.lua`). They keep running while hidden and never show up in the bufferline. There are two kinds:
+
+- **Floating** (`Ctrl-/`): covers the editor. Use it for a quick command, then hide it.
+- **Bottom split** (`<leader>ts`): sits under the editor, so you can see both and move between them.
+
+They are separate shells, so a command running in one doesn't appear in the other.
+
+A terminal window has two modes:
+
+- **Terminal mode** is where you type into the shell. Terminals open in it.
+- **Normal mode** is for reading: scroll, search and copy with the usual Vim keys (`Ctrl-u`, `/text`, `y`).
+
+#### Terminal keys
+
+| Keys         | Where                 | Action                                                                |
+| ------------ | --------------------- | --------------------------------------------------------------------- |
+| `Ctrl-/`     | editor                | Open or show the floating terminal                                    |
+| `Ctrl-/`     | terminal mode         | Hide the current terminal, float or split                             |
+| `2 Ctrl-/`   | editor or normal mode | Second floating terminal, `3 Ctrl-/` a third, and so on               |
+| `<leader>ts` | editor                | Open, show or hide the bottom split                                   |
+| `Esc Esc`    | terminal mode         | Go to normal mode. Press it quickly; a single `Esc` goes to the shell |
+| `i`          | normal mode           | Go back to terminal mode                                              |
+| `q`          | normal mode           | Hide the terminal                                                     |
+| `gf`         | normal mode           | Hide the terminal and open the file named under the cursor            |
+
+- In the bottom split, `Ctrl-h/j/k/l` move between windows (see below). In a float they go to the shell as usual, so `Ctrl-l` clears the screen.
+- Floats all open at the same size and place, so `2 Ctrl-/` covers the first one. Hide it to get back.
+- Each terminal belongs to the working directory it was opened from. After `:cd`, `Ctrl-/` opens a new one.
+- **`Esc Esc` passes one `Esc` to the shell**, and zsh then swallows the next letter you type there (`echo` becomes `cho`). When you press `i` to go back, press `Ctrl-c` first to clear it, or use `Ctrl-\ Ctrl-n` instead of `Esc Esc`.
+
+#### Moving between terminal and editor
+
+From the bottom split:
+
+| From                 | To     | Keys                                  |
+| -------------------- | ------ | ------------------------------------- |
+| Split, terminal mode | Editor | `Ctrl-k` (also `Ctrl-h`, `Ctrl-l`)    |
+| Split, normal mode   | Editor | `Ctrl-w k`                            |
+| Editor               | Split  | `Ctrl-w j`; you land in terminal mode |
+
+`Ctrl-h/j/k/l` only work from terminal mode inside the split. In the editor they do something else, which is why getting back is `Ctrl-w j` and not `Ctrl-j`.
+
+From a float, hide it with `Ctrl-/` and press `Ctrl-/` again to return. Don't use `Ctrl-w k` there: the cursor moves to the editor, but the float stays on top and hides it.
+
+#### Closing a terminal
+
+| You want to       | Keys               | Where         | The shell     |
+| ----------------- | ------------------ | ------------- | ------------- |
+| Hide it           | `Ctrl-/`           | Terminal mode | Keeps running |
+| Hide it           | `q`                | Normal mode   | Keeps running |
+| Hide the split    | `<leader>ts`       | Editor        | Keeps running |
+| Close it for good | `exit` or `Ctrl-d` | Shell prompt  | Ends          |
+
+A hidden terminal comes back with the same key that opened it, with its history and running processes intact.
+
+If the last command failed, `exit` ends the shell with that error code and the window stays open with `Terminal exited with code ...`. Press `Enter`, then `q` to close it.
+
+#### Lazygit
+
+[lazygit](https://github.com/jesseduffield/lazygit) is a keyboard-driven git interface: status, branches, commits and stashes in panels, acted on with single keys. It's handy for staging individual lines, reviewing diffs as you stage, interactive rebases and merge conflicts.
+
+`<leader>gg` opens it in a float. It's optional, so install it first with `brew install lazygit`; without it you get a warning. Inside, `?` lists the keys and `q` quits.
 
 ### Themes
 
