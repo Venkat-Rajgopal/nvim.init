@@ -387,14 +387,14 @@ To turn off `:` command-line completion, set `cmdline = { enabled = false }` in 
 
 Files are formatted when you save, by [conform.nvim](https://github.com/stevearc/conform.nvim) (`lua/plugins/formatting.lua`). `<leader>cf` formats on demand.
 
-| Files       | Formatter                                                                     | Installed by                      |
-| ----------- | ----------------------------------------------------------------------------- | --------------------------------- |
-| Python      | `ruff` (sort imports, then format)                                            | Mason                             |
-| Lua         | `stylua`, using `.stylua.toml` when the project has one                       | Mason                             |
-| Rust        | `rustfmt`                                                                     | rustup                            |
-| JSON        | `jq` (always expanded, 2 spaces)                                              | macOS built-in / `apt install jq` |
-| JSONC, YAML | `prettier`                                                                    | Mason                             |
-| Markdown    | `prettier`, **only with `<leader>cf`** (on save it would realign every table) | Mason                             |
+| Files       | Formatter                                                                            | Installed by                      |
+| ----------- | ------------------------------------------------------------------------------------ | --------------------------------- |
+| Python      | `ruff` (apply safe lint fixes such as removing unused imports, sort imports, format) | Mason                             |
+| Lua         | `stylua`, using `.stylua.toml` when the project has one                              | Mason                             |
+| Rust        | `rustfmt`                                                                            | rustup                            |
+| JSON        | `jq` (always expanded, 2 spaces)                                                     | macOS built-in / `apt install jq` |
+| JSONC, YAML | `prettier`                                                                           | Mason                             |
+| Markdown    | `prettier`, **only with `<leader>cf`** (on save it would realign every table)        | Mason                             |
 
 Never formatted on save: `lazy-lock.json`. lazy.nvim keeps it one plugin per line so git diffs stay small.
 
