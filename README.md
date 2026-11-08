@@ -1,21 +1,8 @@
-```
-                                      █
-                                     ██   █
-                                   █ ███ ██
-                                   ████████
-                                  █████████
-                                   ███████
-                                     ███
+<p align="center">
+  <img src="assets/owl.svg" alt="Pixel-art owl from the dashboard" width="160">
+</p>
 
-███╗   ██╗  ██╗   ██╗  ██╗  ███╗   ███╗       ██╗  ███╗   ██╗  ██╗  ████████╗
-████╗  ██║  ██║   ██║  ██║  ████╗ ████║       ██║  ████╗  ██║  ██║  ╚══██╔══╝
-██╔██╗ ██║  ██║   ██║  ██║  ██╔████╔██║       ██║  ██╔██╗ ██║  ██║     ██║
-██║╚██╗██║  ╚██╗ ██╔╝  ██║  ██║╚██╔╝██║       ██║  ██║╚██╗██║  ██║     ██║
-██║ ╚████║   ╚████╔╝   ██║  ██║ ╚═╝ ██║  ██╗  ██║  ██║ ╚████║  ██║     ██║
-╚═╝  ╚═══╝    ╚═══╝    ╚═╝  ╚═╝     ╚═╝  ╚═╝  ╚═╝  ╚═╝  ╚═══╝  ╚═╝     ╚═╝
-```
-
-# :fire: nvim.init
+# :owl: nvim.init
 
 Custom Neo Vim Configurations
 
@@ -58,6 +45,14 @@ sudo rm /usr/local/bin/nvim && ~/.config/nvim/install.sh
 
 Icons in the file tree, statusline and dashboard need a [Nerd Font](https://www.nerdfonts.com/) set as your terminal font. On Linux that is the font of the terminal you connect from; on a Pi over SSH, it's the font on your laptop's terminal.
 
+Use a **Nerd Fonts v3** font. nvim-web-devicons uses v3 glyphs, so older patched fonts show blanks for some files (`.toml`, `.yaml`, `.css`, `.ipynb`). The `MesloLGS NF` font that powerlevel10k installs is one of these older fonts. Replace it with the current build, which still has the prompt glyphs:
+
+```sh
+brew install --cask font-meslo-lg-nerd-font
+```
+
+Then pick **MesloLGS Nerd Font Mono** in your terminal (iTerm: Settings → Profiles → Text → Font).
+
 ## Installation instructions
 
 On Linux, `install.sh` has already done this. On macOS, clone this repo as the `nvim` dir inside `~/.config/`:
@@ -80,19 +75,20 @@ nvim --headless "+Lazy! sync" +qa
 
 Plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim).
 
-| Path                        | What it is                                                                                                                                    |
-| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| `install.sh`                | Sets up Debian, Ubuntu and Raspberry Pi OS                                                                                                    |
-| `init.lua`                  | Sets `<leader>` and loads `lua/insomnia`                                                                                                      |
-| `lua/insomnia/options.lua`  | Editor settings (`vim.opt`)                                                                                                                   |
-| `lua/insomnia/theme.lua`    | Restores the last chosen colorscheme                                                                                                          |
-| `lua/insomnia/remap.lua`    | Global keymaps                                                                                                                                |
-| `lua/insomnia/platform.lua` | Detects the Raspberry Pi                                                                                                                      |
-| `lua/insomnia/lazy.lua`     | Bootstraps and sets up lazy.nvim                                                                                                              |
-| `lua/insomnia/lsp/`         | Language server setup (Python, Rust, Markdown)                                                                                                |
-| `lua/plugins/*.lua`         | Plugin specs, one file per area (`ui`, `editor`, `git`, `telescope`, `which-key`, `completion`, `lsp`, `formatting`, `lint`, `terminal`, ...) |
-| `.stylua.toml`              | Lua formatting style for this config (2 spaces, 120 columns)                                                                                  |
-| `lazy-lock.json`            | Pinned plugin versions. Commit it.                                                                                                            |
+| Path                             | What it is                                                                                                                                    |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `install.sh`                     | Sets up Debian, Ubuntu and Raspberry Pi OS                                                                                                    |
+| `init.lua`                       | Sets `<leader>` and loads `lua/insomnia`                                                                                                      |
+| `lua/insomnia/options.lua`       | Editor settings (`vim.opt`)                                                                                                                   |
+| `lua/insomnia/theme.lua`         | Restores the last chosen colorscheme                                                                                                          |
+| `lua/insomnia/remap.lua`         | Global keymaps                                                                                                                                |
+| `lua/insomnia/platform.lua`      | Detects the Raspberry Pi                                                                                                                      |
+| `lua/insomnia/lazy.lua`          | Bootstraps and sets up lazy.nvim                                                                                                              |
+| `lua/insomnia/dashboard_art.lua` | Pixel art for the start screen (moon, neovim, coffee, owl)                                                                                    |
+| `lua/insomnia/lsp/`              | Language server setup (Python, Rust, Markdown)                                                                                                |
+| `lua/plugins/*.lua`              | Plugin specs, one file per area (`ui`, `editor`, `git`, `telescope`, `which-key`, `completion`, `lsp`, `formatting`, `lint`, `terminal`, ...) |
+| `.stylua.toml`                   | Lua formatting style for this config (2 spaces, 120 columns)                                                                                  |
+| `lazy-lock.json`                 | Pinned plugin versions. Commit it.                                                                                                            |
 
 ### Commands
 
@@ -480,9 +476,33 @@ If the last command failed, `exit` ends the shell with that error code and the w
 
 `<leader>gg` opens it in a float. It's optional, so install it first with `brew install lazygit`; without it you get a warning. Inside, `?` lists the keys and `q` quits.
 
+### Statusline and file tree
+
+The statusline (lualine, `lua/plugins/ui.lua`) is one bar across all splits with rounded separators. From left to right it shows: mode, git branch, diff counts (from gitsigns), diagnostics, the file path relative to the working directory, the attached language servers, filetype, and position. It is hidden on the dashboard.
+
+The file tree (`lua/plugins/nvim-tree.lua`) colours file names by git status, highlights open files and draws indent guides. `.git`, `node_modules`, `__pycache__` and `.DS_Store` are hidden; press `U` in the tree to show them.
+
+Floating windows (hover, diagnostics, completion, which-key, terminal, lazygit, Mason, lazy.nvim) use rounded borders.
+
+### Dashboard
+
+Running `nvim` with no file opens the snacks.nvim dashboard (`lua/plugins/dashboard.lua`): pixel art, shortcut keys, your 5 most recent files (press `1`–`5`) and the startup time.
+
+| Key | Action       |
+| --- | ------------ |
+| `f` | Find file    |
+| `g` | Live grep    |
+| `r` | Recent files |
+| `e` | File tree    |
+| `c` | Config       |
+| `L` | Lazy         |
+| `q` | Quit         |
+
+The art lives in `lua/insomnia/dashboard_art.lua`: each character in a template is one pixel, coloured from that art's palette. Two pixel rows share one terminal line (`▀` with top and bottom colours), so the pixels come out square. `assets/owl.svg` at the top of this README is drawn from the same template. `:DashboardArt <name>` (`moon`, `neovim`, `coffee`, `owl`; Tab completes) shows another piece for the session; change `art` at the top of `lua/plugins/dashboard.lua` to keep it.
+
 ### Themes
 
-Press `<leader>th` to pick a colorscheme. Moving through the list previews each one live; `Enter` keeps it, `Esc` goes back. The choice is saved to `~/.local/share/nvim/last_theme` and restored on the next start. The statusline (`theme = "auto"`) follows the active theme; the dashboard flame keeps its own colours.
+Press `<leader>th` to pick a colorscheme. Moving through the list previews each one live; `Enter` keeps it, `Esc` goes back. The choice is saved to `~/.local/share/nvim/last_theme` and restored on the next start. The statusline (`theme = "auto"`) follows the active theme; the dashboard art keeps its own colours.
 
 | Theme                                                          | Variants                                    | Style                   |
 | -------------------------------------------------------------- | ------------------------------------------- | ----------------------- |
