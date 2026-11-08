@@ -1,21 +1,8 @@
-```
-                                      █
-                                     ██   █
-                                   █ ███ ██
-                                   ████████
-                                  █████████
-                                   ███████
-                                     ███
+<p align="center">
+  <img src="assets/owl.svg" alt="Pixel-art owl from the dashboard" width="160">
+</p>
 
-███╗   ██╗  ██╗   ██╗  ██╗  ███╗   ███╗       ██╗  ███╗   ██╗  ██╗  ████████╗
-████╗  ██║  ██║   ██║  ██║  ████╗ ████║       ██║  ████╗  ██║  ██║  ╚══██╔══╝
-██╔██╗ ██║  ██║   ██║  ██║  ██╔████╔██║       ██║  ██╔██╗ ██║  ██║     ██║
-██║╚██╗██║  ╚██╗ ██╔╝  ██║  ██║╚██╔╝██║       ██║  ██║╚██╗██║  ██║     ██║
-██║ ╚████║   ╚████╔╝   ██║  ██║ ╚═╝ ██║  ██╗  ██║  ██║ ╚████║  ██║     ██║
-╚═╝  ╚═══╝    ╚═══╝    ╚═╝  ╚═╝     ╚═╝  ╚═╝  ╚═╝  ╚═╝  ╚═══╝  ╚═╝     ╚═╝
-```
-
-# :fire: nvim.init
+# :owl: nvim.init
 
 Custom Neo Vim Configurations
 
@@ -511,7 +498,7 @@ Running `nvim` with no file opens the snacks.nvim dashboard (`lua/plugins/dashbo
 | `L` | Lazy         |
 | `q` | Quit         |
 
-The art lives in `lua/insomnia/dashboard_art.lua`: each character in a template is one pixel, coloured from that art's palette. Two pixel rows share one terminal line (`▀` with top and bottom colours), so the pixels come out square. `:DashboardArt <name>` (`moon`, `neovim`, `coffee`, `owl`; Tab completes) shows another piece for the session; change `art` at the top of `lua/plugins/dashboard.lua` to keep it.
+The art lives in `lua/insomnia/dashboard_art.lua`: each character in a template is one pixel, coloured from that art's palette. Two pixel rows share one terminal line (`▀` with top and bottom colours), so the pixels come out square. `assets/owl.svg` at the top of this README is drawn from the same template. `:DashboardArt <name>` (`moon`, `neovim`, `coffee`, `owl`; Tab completes) shows another piece for the session; change `art` at the top of `lua/plugins/dashboard.lua` to keep it.
 
 ### Themes
 

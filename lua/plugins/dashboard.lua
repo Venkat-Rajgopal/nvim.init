@@ -1,6 +1,6 @@
 -- Start screen: snacks.nvim dashboard with pixel art from lua/insomnia/dashboard_art.lua.
 -- :DashboardArt <name> switches the art for this session; set `art` below to keep it.
-local art = "moon"
+local art = "owl"
 
 local function header()
   local A = require("insomnia.dashboard_art")
