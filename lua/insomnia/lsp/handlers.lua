@@ -37,7 +37,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
   callback = function(ev)
     local client = vim.lsp.get_client_by_id(ev.data.client_id)
 
-    -- pyright (ty on the Pi) handles hover for Python; ruff only lints, formats and fixes
+    -- basedpyright (ty on the Pi) handles hover for Python; ruff only lints, formats and fixes
     if client and client.name == "ruff" then
       client.server_capabilities.hoverProvider = false
     end

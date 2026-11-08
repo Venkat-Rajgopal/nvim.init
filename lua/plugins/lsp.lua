@@ -17,13 +17,9 @@ local npm_servers = { "jsonls" } -- JSON
 local npm_tools = { "prettier", "markdownlint" }
 local npm_packages = { "json-lsp", "prettier", "markdownlint" } -- Mason names
 
--- Python types: pyright needs Node and a lot of memory, so the Pi uses ty
-if is_pi then
-  table.insert(servers, "ty")
-else
-  table.insert(npm_servers, "pyright")
-  table.insert(npm_packages, "pyright")
-end
+-- Python types: basedpyright (Mason installs it from PyPI with its own Node) is
+-- too heavy for the Pi, which uses ty
+table.insert(servers, is_pi and "ty" or "basedpyright")
 
 local have_npm = vim.fn.executable("npm") == 1
 if have_npm then

@@ -15,11 +15,12 @@ local function get_python_path(root)
   return system ~= "" and system or "python"
 end
 
--- Pyright: types, hover, go-to-definition
-vim.lsp.config("pyright", {
-  before_init = function(_, config) config.settings.python.pythonPath = get_python_path(config.root_dir) end,
+-- basedpyright: types, hover, go-to-definition, and "Add import" quick fixes
+-- (plain pyright has no import code actions; that part of Pylance is closed source)
+vim.lsp.config("basedpyright", {
+  before_init = function(_, config) config.settings.python = { pythonPath = get_python_path(config.root_dir) } end,
   settings = {
-    python = {
+    basedpyright = {
       analysis = {
         typeCheckingMode = "basic",
         autoSearchPaths = true,
@@ -36,10 +37,9 @@ vim.lsp.config("ruff", {})
 vim.lsp.enable("ruff")
 
 if require("insomnia.platform").is_pi then
-  -- ty replaces pyright on the Pi. It finds the interpreter by itself, in the same
+  -- ty replaces basedpyright on the Pi. It finds the interpreter by itself, in the same
   -- order as get_python_path, and only checks open files by default.
   vim.lsp.enable("ty")
-elseif vim.fn.executable("pyright-langserver") == 1 or vim.fn.executable("npm") == 1 then
-  -- Without npm, Mason can't install it (lua/plugins/lsp.lua): don't try to start it
-  vim.lsp.enable("pyright")
+else
+  vim.lsp.enable("basedpyright")
 end

@@ -8,9 +8,9 @@ Custom Neo Vim Configurations
 
 ## Requirements
 
-Requires Neovim **0.12+**, `git`, a C compiler, `tree-sitter-cli` (nvim-treesitter's main branch uses it to build parsers), `ripgrep` (for `live_grep`) and **Node.js 22+** with `npm` (Mason uses it to install `pyright`, `jsonls`, `prettier` and `markdownlint`; without it these are skipped with one warning on startup).
+Requires Neovim **0.12+**, `git`, a C compiler, `tree-sitter-cli` (nvim-treesitter's main branch uses it to build parsers), `ripgrep` (for `live_grep`) and **Node.js 22+** with `npm` (Mason uses it to install `jsonls`, `prettier` and `markdownlint`; without it these are skipped with one warning on startup).
 
-On a **Raspberry Pi**, follow [README-pi.md](README-pi.md) instead: `install.sh` sets everything up, and the Pi uses `ty` rather than `pyright`.
+On a **Raspberry Pi**, follow [README-pi.md](README-pi.md) instead: `install.sh` sets everything up, and the Pi uses `ty` rather than `basedpyright`.
 
 ### macOS
 
@@ -314,20 +314,20 @@ Other:
 
 Set in `lua/insomnia/lsp/handlers.lua` for every language server when it attaches to a buffer.
 
-| Keys         | Action                                          |
-| ------------ | ----------------------------------------------- |
-| `gd`         | Go to definition                                |
-| `gD`         | Go to declaration                               |
-| `gi`         | Go to implementation                            |
-| `gr`         | List references                                 |
-| `K`          | Hover documentation                             |
-| `Ctrl-k`     | Signature help                                  |
-| `<leader>rn` | Rename symbol                                   |
-| `<leader>ca` | Code action (e.g. ruff fixes, organize imports) |
-| `gl`         | Show diagnostics for the current line           |
-| `[d` / `]d`  | Previous / next diagnostic (opens the float)    |
-| `<leader>q`  | Put diagnostics in location list                |
-| `Ctrl-o`     | Jump back after `gd` / `gi`                     |
+| Keys         | Action                                                                |
+| ------------ | --------------------------------------------------------------------- |
+| `gd`         | Go to definition                                                      |
+| `gD`         | Go to declaration                                                     |
+| `gi`         | Go to implementation                                                  |
+| `gr`         | List references                                                       |
+| `K`          | Hover documentation                                                   |
+| `Ctrl-k`     | Signature help                                                        |
+| `<leader>rn` | Rename symbol                                                         |
+| `<leader>ca` | Code action (e.g. add a missing import, ruff fixes, organize imports) |
+| `gl`         | Show diagnostics for the current line                                 |
+| `[d` / `]d`  | Previous / next diagnostic (opens the float)                          |
+| `<leader>q`  | Put diagnostics in location list                                      |
+| `Ctrl-o`     | Jump back after `gd` / `gi`                                           |
 
 Neovim's built-in LSP keys also work: `grn` rename, `gra` code action, `grr` references, `gri` implementation, `gO` document symbols, `Ctrl-s` signature help in insert mode. Because `gr` is mapped too, Neovim waits briefly after `gr` to see if you meant one of these.
 
@@ -335,15 +335,15 @@ Neovim's built-in LSP keys also work: `grn` rename, `gra` code action, `grr` ref
 
 Installed by Mason (`:Mason`) and enabled in `lua/insomnia/lsp/`.
 
-| Language | Server                                                                                             | File               |
-| -------- | -------------------------------------------------------------------------------------------------- | ------------------ |
-| Python   | `pyright` (`ty` on the Pi: types, hover, navigation) + `ruff` (lint, import sorting, fixes)        | `lsp/python.lua`   |
-| Rust     | `rust_analyzer` (clippy on save), **from rustup, not Mason**: `rustup component add rust-analyzer` | `lsp/rust.lua`     |
-| Markdown | `marksman`                                                                                         | `lsp/markdown.lua` |
-| Lua      | `lua_ls` (+ lazydev for Neovim API types)                                                          | `lsp/lua.lua`      |
-| JSON     | `jsonls` (validation)                                                                              | `lsp/json.lua`     |
+| Language | Server                                                                                                                   | File               |
+| -------- | ------------------------------------------------------------------------------------------------------------------------ | ------------------ |
+| Python   | `basedpyright` (`ty` on the Pi: types, hover, navigation, add-import quick fixes) + `ruff` (lint, import sorting, fixes) | `lsp/python.lua`   |
+| Rust     | `rust_analyzer` (clippy on save), **from rustup, not Mason**: `rustup component add rust-analyzer`                       | `lsp/rust.lua`     |
+| Markdown | `marksman`                                                                                                               | `lsp/markdown.lua` |
+| Lua      | `lua_ls` (+ lazydev for Neovim API types)                                                                                | `lsp/lua.lua`      |
+| JSON     | `jsonls` (validation)                                                                                                    | `lsp/json.lua`     |
 
-**Python uses uv only.** Pyright picks the interpreter in this order:
+**Python uses uv only.** basedpyright picks the interpreter in this order:
 
 1. `$VIRTUAL_ENV`, i.e. a venv you activated (`source .venv/bin/activate`) or started nvim under (`uv run nvim`)
 2. `.venv/bin/python` in the project root (what `uv venv` / `uv sync` create)
@@ -400,7 +400,7 @@ Never formatted on save: `lazy-lock.json`. lazy.nvim keeps it one plugin per lin
 
 Other file types fall back to the language server's formatter, if it has one.
 
-Linting comes from the language servers (pyright, ruff, rust-analyzer, lua_ls, jsonls), plus [nvim-lint](https://github.com/mfussenegger/nvim-lint) running `markdownlint` on Markdown (`lua/plugins/lint.lua`, line-length rule MD013 off). Lint results show up as normal diagnostics, so `gl`, `[d` / `]d` work on them.
+Linting comes from the language servers (basedpyright, ruff, rust-analyzer, lua_ls, jsonls), plus [nvim-lint](https://github.com/mfussenegger/nvim-lint) running `markdownlint` on Markdown (`lua/plugins/lint.lua`, line-length rule MD013 off). Lint results show up as normal diagnostics, so `gl`, `[d` / `]d` work on them.
 
 | Command        | Action                                                                                         |
 | -------------- | ---------------------------------------------------------------------------------------------- |
