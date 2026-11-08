@@ -23,7 +23,7 @@ return {
         component_separators = { left = icon(0xe0b5), right = icon(0xe0b7) }, -- thin rounded
         section_separators = { left = icon(0xe0b4), right = icon(0xe0b6) }, -- rounded
         globalstatus = true, -- one statusline across splits
-        disabled_filetypes = { statusline = { "alpha" } },
+        disabled_filetypes = { statusline = { "snacks_dashboard" } },
       },
       sections = {
         lualine_a = { "mode" },

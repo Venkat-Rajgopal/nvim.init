@@ -88,19 +88,20 @@ nvim --headless "+Lazy! sync" +qa
 
 Plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim).
 
-| Path                        | What it is                                                                                                                                    |
-| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| `install.sh`                | Sets up Debian, Ubuntu and Raspberry Pi OS                                                                                                    |
-| `init.lua`                  | Sets `<leader>` and loads `lua/insomnia`                                                                                                      |
-| `lua/insomnia/options.lua`  | Editor settings (`vim.opt`)                                                                                                                   |
-| `lua/insomnia/theme.lua`    | Restores the last chosen colorscheme                                                                                                          |
-| `lua/insomnia/remap.lua`    | Global keymaps                                                                                                                                |
-| `lua/insomnia/platform.lua` | Detects the Raspberry Pi                                                                                                                      |
-| `lua/insomnia/lazy.lua`     | Bootstraps and sets up lazy.nvim                                                                                                              |
-| `lua/insomnia/lsp/`         | Language server setup (Python, Rust, Markdown)                                                                                                |
-| `lua/plugins/*.lua`         | Plugin specs, one file per area (`ui`, `editor`, `git`, `telescope`, `which-key`, `completion`, `lsp`, `formatting`, `lint`, `terminal`, ...) |
-| `.stylua.toml`              | Lua formatting style for this config (2 spaces, 120 columns)                                                                                  |
-| `lazy-lock.json`            | Pinned plugin versions. Commit it.                                                                                                            |
+| Path                             | What it is                                                                                                                                    |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `install.sh`                     | Sets up Debian, Ubuntu and Raspberry Pi OS                                                                                                    |
+| `init.lua`                       | Sets `<leader>` and loads `lua/insomnia`                                                                                                      |
+| `lua/insomnia/options.lua`       | Editor settings (`vim.opt`)                                                                                                                   |
+| `lua/insomnia/theme.lua`         | Restores the last chosen colorscheme                                                                                                          |
+| `lua/insomnia/remap.lua`         | Global keymaps                                                                                                                                |
+| `lua/insomnia/platform.lua`      | Detects the Raspberry Pi                                                                                                                      |
+| `lua/insomnia/lazy.lua`          | Bootstraps and sets up lazy.nvim                                                                                                              |
+| `lua/insomnia/dashboard_art.lua` | Pixel art for the start screen (moon, neovim, coffee, owl)                                                                                    |
+| `lua/insomnia/lsp/`              | Language server setup (Python, Rust, Markdown)                                                                                                |
+| `lua/plugins/*.lua`              | Plugin specs, one file per area (`ui`, `editor`, `git`, `telescope`, `which-key`, `completion`, `lsp`, `formatting`, `lint`, `terminal`, ...) |
+| `.stylua.toml`                   | Lua formatting style for this config (2 spaces, 120 columns)                                                                                  |
+| `lazy-lock.json`                 | Pinned plugin versions. Commit it.                                                                                                            |
 
 ### Commands
 
@@ -496,9 +497,25 @@ The file tree (`lua/plugins/nvim-tree.lua`) colours file names by git status, hi
 
 Floating windows (hover, diagnostics, completion, which-key, terminal, lazygit, Mason, lazy.nvim) use rounded borders.
 
+### Dashboard
+
+Running `nvim` with no file opens the snacks.nvim dashboard (`lua/plugins/dashboard.lua`): pixel art, shortcut keys, your 5 most recent files (press `1`–`5`) and the startup time.
+
+| Key | Action       |
+| --- | ------------ |
+| `f` | Find file    |
+| `g` | Live grep    |
+| `r` | Recent files |
+| `e` | File tree    |
+| `c` | Config       |
+| `L` | Lazy         |
+| `q` | Quit         |
+
+The art lives in `lua/insomnia/dashboard_art.lua`: each character in a template is one pixel, coloured from that art's palette. Two pixel rows share one terminal line (`▀` with top and bottom colours), so the pixels come out square. `:DashboardArt <name>` (`moon`, `neovim`, `coffee`, `owl`; Tab completes) shows another piece for the session; change `art` at the top of `lua/plugins/dashboard.lua` to keep it.
+
 ### Themes
 
-Press `<leader>th` to pick a colorscheme. Moving through the list previews each one live; `Enter` keeps it, `Esc` goes back. The choice is saved to `~/.local/share/nvim/last_theme` and restored on the next start. The statusline (`theme = "auto"`) follows the active theme; the dashboard flame keeps its own colours.
+Press `<leader>th` to pick a colorscheme. Moving through the list previews each one live; `Enter` keeps it, `Esc` goes back. The choice is saved to `~/.local/share/nvim/last_theme` and restored on the next start. The statusline (`theme = "auto"`) follows the active theme; the dashboard art keeps its own colours.
 
 | Theme                                                          | Variants                                    | Style                   |
 | -------------------------------------------------------------- | ------------------------------------------- | ----------------------- |
