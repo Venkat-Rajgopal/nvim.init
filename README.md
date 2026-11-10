@@ -256,13 +256,13 @@ Check any option with `:set <name>?`, e.g. `:set shiftwidth?`.
 
 ### Windows and buffers
 
-| Keys                | Action                              |
-| ------------------- | ----------------------------------- |
-| `Tab` / `Shift-Tab` | Next / previous buffer (bufferline) |
-| `:bd`               | Close current buffer                |
-| `:vsp` / `:sp`      | Split vertical / horizontal         |
-| `Ctrl-w h/j/k/l`    | Move between splits                 |
-| `Ctrl-w q`          | Close split                         |
+| Keys                | Action                                    |
+| ------------------- | ----------------------------------------- |
+| `Tab` / `Shift-Tab` | Next / previous buffer (bufferline)       |
+| `:bd`               | Close current buffer                      |
+| `:vsp` / `:sp`      | Split vertical / horizontal               |
+| `Ctrl-h/j/k/l`      | Move between splits (or `Ctrl-w h/j/k/l`) |
+| `Ctrl-w q`          | Close split                               |
 
 ### Custom shortcuts
 
@@ -321,7 +321,7 @@ Set in `lua/insomnia/lsp/handlers.lua` for every language server when it attache
 | `gi`         | Go to implementation                                                  |
 | `gr`         | List references                                                       |
 | `K`          | Hover documentation                                                   |
-| `Ctrl-k`     | Signature help                                                        |
+| `gK`         | Signature help (`Ctrl-s` in insert mode)                              |
 | `<leader>rn` | Rename symbol                                                         |
 | `<leader>ca` | Code action (e.g. add a missing import, ruff fixes, organize imports) |
 | `gl`         | Show diagnostics for the current line                                 |
@@ -447,13 +447,13 @@ A terminal window has two modes:
 
 From the bottom split:
 
-| From                 | To     | Keys                                  |
-| -------------------- | ------ | ------------------------------------- |
-| Split, terminal mode | Editor | `Ctrl-k` (also `Ctrl-h`, `Ctrl-l`)    |
-| Split, normal mode   | Editor | `Ctrl-w k`                            |
-| Editor               | Split  | `Ctrl-w j`; you land in terminal mode |
+| From                 | To     | Keys                                |
+| -------------------- | ------ | ----------------------------------- |
+| Split, terminal mode | Editor | `Ctrl-k` (also `Ctrl-h`, `Ctrl-l`)  |
+| Split, normal mode   | Editor | `Ctrl-k`                            |
+| Editor               | Split  | `Ctrl-j`; you land in terminal mode |
 
-`Ctrl-h/j/k/l` only work from terminal mode inside the split. In the editor they do something else, which is why getting back is `Ctrl-w j` and not `Ctrl-j`.
+`Ctrl-h/j/k/l` move between windows in normal mode everywhere, and in terminal mode inside the split.
 
 From a float, hide it with `Ctrl-/` and press `Ctrl-/` again to return. Don't use `Ctrl-w k` there: the cursor moves to the editor, but the float stays on top and hides it.
 
