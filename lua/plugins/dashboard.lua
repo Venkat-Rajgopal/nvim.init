@@ -1,10 +1,12 @@
 -- Start screen: snacks.nvim dashboard with pixel art from lua/insomnia/dashboard_art.lua.
--- :DashboardArt <name> switches the art for this session; set `art` below to keep it.
+-- :DashboardArt <name> tries other art for this session only.
+-- To show different art on every launch, change this name (see lua/insomnia/dashboard_art.lua
+-- for the list: alien, bonsai, cactus, cat, coffee, fox, moon, mountains, mushroom, neovim, owl, rocket).
 local art = "owl"
 
 local function header()
   local A = require("insomnia.dashboard_art")
-  vim.api.nvim_set_hl(0, "InsomniaTitle", { fg = A.art[art].accent, bold = true })
+  vim.api.nvim_set_hl(0, "InsomniaTitle", { fg = (A.art[art] or A.art.moon).accent, bold = true })
   return {
     { text = A.render(art), align = "center", padding = 1 },
     { text = { "n e o v i m", hl = "InsomniaTitle" }, align = "center", padding = 2 },

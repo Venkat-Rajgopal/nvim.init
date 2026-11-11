@@ -12,7 +12,22 @@
 
 `nvim` with no file opens the snacks.nvim dashboard: pixel art, shortcuts (`f` find, `g` grep, `r` recent, `e` tree, `c` config, `L` Lazy, `q` quit) and your 5 most recent files (`1`–`5`).
 
-The art is in `lua/insomnia/dashboard_art.lua`: each character in a template is one pixel, and two pixel rows share a terminal line (`▀`), so pixels come out square. `:DashboardArt <name>` (`moon`, `neovim`, `coffee`, `owl`) shows another for the session; change `art` in `lua/plugins/dashboard.lua` to keep it. The owl on this site is drawn from the same template.
+### Changing the art
+
+There are 12 pieces: `alien`, `bonsai`, `cactus`, `cat`, `coffee`, `fox`, `moon`, `mountains`, `mushroom`, `neovim`, `owl` (the default) and `rocket`.
+
+- **Try one for this session:** `:DashboardArt <name>` (Tab completes the names). It is forgotten when Neovim quits.
+- **Keep one for every launch:** edit the `art` line at the top of `lua/plugins/dashboard.lua` and restart Neovim:
+
+  ```lua
+  local art = "fox" -- any name from the list above
+  ```
+
+  An unknown name falls back to `moon`.
+
+### Drawing your own
+
+The templates are in `lua/insomnia/dashboard_art.lua`. Each character in `rows` is one pixel, coloured by its entry in `colors` (a space is empty); two pixel rows share a terminal line (`▀`), so pixels come out square. `accent` colours the title under the art. Add a new entry to `M.art` and it shows up in `:DashboardArt` straight away. The owl on this site is drawn from the same template.
 
 ## Statusline and file tree
 
