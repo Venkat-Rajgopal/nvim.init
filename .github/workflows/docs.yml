@@ -1,0 +1,93 @@
+# Builds the docs site and deploys it to GitHub Pages.
+# The reference pages are generated from the config, so any config change redeploys them.
+name: Docs
+
+on:
+  push:
+    branches: [main]
+    paths:
+      [
+        "init.lua",
+        "lua/**",
+        "lazy-lock.json",
+        "docs/**",
+        ".github/workflows/docs.yml",
+      ]
+  pull_request:
+    paths:
+      [
+        "init.lua",
+        "lua/**",
+        "lazy-lock.json",
+        "docs/**",
+        ".github/workflows/docs.yml",
+      ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NVIM_VERSION: v0.12.6
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Neovim
+        run: |
+          curl -fsSL "https://github.com/neovim/neovim/releases/download/${NVIM_VERSION}/nvim-linux-x86_64.tar.gz" | tar -xz -C "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/nvim-linux-x86_64/bin" >> "$GITHUB_PATH"
+
+      - name: Use this checkout as the Neovim config
+        run: mkdir -p ~/.config && ln -s "$GITHUB_WORKSPACE" ~/.config/nvim
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.local/share/nvim/lazy
+          key: lazy-${{ hashFiles('lazy-lock.json') }}
+
+      # Before the plugins: lua/plugins/lsp.lua only lists the npm servers (jsonls) when npm exists
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: docs/package-lock.json
+
+      # Plugins at the versions in lazy-lock.json. Mason and the parser builds are skipped
+      # headless / without the tree-sitter CLI; the docs don't need them.
+      # The first install bumps lazy.nvim's own lock entry, so put it back and restore again.
+      - name: Install plugins
+        run: |
+          nvim --headless "+Lazy! restore" +qa
+          git checkout -- lazy-lock.json
+          nvim --headless "+Lazy! restore" +qa
+
+      - name: Generate and build
+        working-directory: docs
+        run: |
+          npm ci
+          npm run docs:build
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/.vitepress/dist
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

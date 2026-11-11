@@ -14,3 +14,9 @@ plugin/packer_compiled.lua
 
 # macOS junk
 .DS_Store
+
+# Docs site: dependencies, build output, and pages generated from the config
+docs/node_modules/
+docs/.vitepress/cache/
+docs/.vitepress/dist/
+docs/reference/*.md

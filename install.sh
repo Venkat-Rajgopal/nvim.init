@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Set up this Neovim config on apt-based Linux: Debian, Ubuntu, 64-bit Raspberry Pi OS.
 # Installs what's missing, puts the config in ~/.config/nvim and installs the plugins.
-# See README.md, or README-pi.md on a Raspberry Pi.
+# Docs: https://venkat-rajgopal.github.io/nvim.init/guide/install
 #
 #   ./install.sh           check, install, set up
 #   ./install.sh --check   only report what's missing
@@ -156,4 +156,4 @@ install_plugins
 
 log "Done"
 printf 'Start nvim: the language servers install on the first start, watch them with :Mason.\n'
-printf 'See README.md, or README-pi.md on a Raspberry Pi, for what to check next.\n'
+printf 'Next steps: https://venkat-rajgopal.github.io/nvim.init/guide/install#first-start\n'

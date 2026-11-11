@@ -1,4 +1,4 @@
--- Machine-specific choices. The Raspberry Pi uses lighter tools (see README-pi.md).
+-- Machine-specific choices. The Raspberry Pi uses lighter tools (see docs/guide/raspberry-pi.md).
 local file = io.open("/proc/device-tree/model", "r")
 local model = file and file:read("*a") or ""
 if file then

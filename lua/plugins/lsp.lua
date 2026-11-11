@@ -69,7 +69,7 @@ return {
             vim.notify(
               "npm not found; Mason can't install: "
                 .. table.concat(missing, ", ")
-                .. "\nInstall Node.js 22+ (see Requirements in the README) and restart.",
+                .. "\nInstall Node.js 22+ (see docs/guide/install.md) and restart.",
               vim.log.levels.WARN
             )
           end
