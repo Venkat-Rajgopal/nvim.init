@@ -29,9 +29,10 @@ permissions:
   pages: write
   id-token: write
 
+# One deploy at a time per branch; a newer push waits instead of cancelling a deploy halfway
 concurrency:
-  group: pages-${{ github.ref }}
-  cancel-in-progress: true
+  group: docs-${{ github.ref }}
+  cancel-in-progress: false
 
 env:
   NVIM_VERSION: v0.12.6
