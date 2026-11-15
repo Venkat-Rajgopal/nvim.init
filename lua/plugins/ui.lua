@@ -50,9 +50,19 @@ return {
       options = {
         mode = "buffers", -- or "tabs"
         diagnostics = "nvim_lsp",
-        separator_style = "thin", -- "slant" draws blocks that clash with some themes
+        separator_style = { "", "" }, -- no separators: tabs read as solid blocks
+        tab_size = 24, -- wider tabs make the bar look roomier
         show_buffer_icons = true,
         show_close_icon = false,
+        -- extra space after the file icon so it stands out more
+        get_element_icon = function(element)
+          if element.directory then
+            return nil
+          end -- let bufferline draw its folder icon
+          local name = vim.fn.fnamemodify(element.path, ":t")
+          local icon, hl = require("nvim-web-devicons").get_icon(name, nil, { default = true })
+          return icon .. " ", hl
+        end,
 
         -- set up the sidebar explorer
         offsets = {
@@ -64,6 +74,31 @@ return {
           },
         },
       },
+      -- Style look: darker bar, active tab blends into the editor below it.
+      -- A function so bufferline re-derives the colours on every :colorscheme.
+      highlights = function(defaults)
+        local hl = vim.deepcopy(defaults.highlights)
+        local normal = vim.api.nvim_get_hl(0, { name = "Normal", link = false })
+        if not normal.bg then
+          return hl
+        end -- transparent theme: keep defaults
+        local shade = require("bufferline.colors").shade_color
+        local editor = string.format("#%06x", normal.bg)
+        local fill, inactive = shade(editor, -25), shade(editor, -12)
+        for name, group in pairs(hl) do
+          if name == "fill" or name:find("^offset") then
+            group.bg = fill
+          elseif name:find("selected") then
+            group.bg = editor
+          elseif group.bg then
+            group.bg = inactive
+          end
+          if name:find("separator") then
+            group.fg = fill
+          end
+        end
+        return hl
+      end,
     },
   },
 
