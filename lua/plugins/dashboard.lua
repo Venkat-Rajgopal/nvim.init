@@ -1,8 +1,35 @@
 -- Start screen: snacks.nvim dashboard with pixel art from lua/insomnia/dashboard_art.lua.
--- :DashboardArt <name> tries other art for this session only.
--- To show different art on every launch, change this name (see lua/insomnia/dashboard_art.lua
--- for the list: alien, bonsai, cactus, cat, coffee, fox, moon, mountains, mushroom, neovim, owl, rocket).
-local art = "owl"
+-- :DashboardArt <name> (or no name, for a picker) switches the art and remembers it, like the
+-- theme picker. The choice is saved to ~/.local/share/nvim/dashboard_art; `default` is used until
+-- something is picked (names: see lua/insomnia/dashboard_art.lua).
+local default = "owl"
+local state_file = vim.fn.stdpath("data") .. "/dashboard_art"
+
+local function read_saved()
+  local f = io.open(state_file, "r")
+  if not f then
+    return nil
+  end
+  local name = vim.trim(f:read("*a"))
+  f:close()
+  return name ~= "" and name or nil
+end
+
+local art = read_saved() or default
+
+local function set_art(name)
+  if not require("insomnia.dashboard_art").art[name] then
+    vim.notify("No dashboard art named " .. name, vim.log.levels.ERROR)
+    return
+  end
+  art = name
+  local f = io.open(state_file, "w")
+  if f then
+    f:write(name)
+    f:close()
+  end
+  Snacks.dashboard.open()
+end
 
 local function header()
   local A = require("insomnia.dashboard_art")
@@ -41,12 +68,20 @@ return {
     },
     init = function()
       vim.api.nvim_create_user_command("DashboardArt", function(cmd)
-        art = cmd.args
-        Snacks.dashboard.open()
+        if cmd.args ~= "" then
+          return set_art(cmd.args)
+        end
+        local names = vim.deepcopy(require("insomnia.dashboard_art").names)
+        table.sort(names)
+        vim.ui.select(names, { prompt = "Dashboard art (current: " .. art .. ")" }, function(choice)
+          if choice then
+            set_art(choice)
+          end
+        end)
       end, {
-        nargs = 1,
+        nargs = "?",
         complete = function() return require("insomnia.dashboard_art").names end,
-        desc = "Show the dashboard with another piece of art",
+        desc = "Pick the dashboard art (remembered)",
       })
     end,
   },

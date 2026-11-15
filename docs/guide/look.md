@@ -16,14 +16,11 @@
 
 There are 12 pieces: `alien`, `bonsai`, `cactus`, `cat`, `coffee`, `fox`, `moon`, `mountains`, `mushroom`, `neovim`, `owl` (the default) and `rocket`.
 
-- **Try one for this session:** `:DashboardArt <name>` (Tab completes the names). It is forgotten when Neovim quits.
-- **Keep one for every launch:** edit the `art` line at the top of `lua/plugins/dashboard.lua` and restart Neovim:
+- **Pick one:** `:DashboardArt` opens a picker, or `:DashboardArt <name>` (Tab completes the names). The dashboard redraws with the new art.
+- **It is remembered:** like the theme, the choice is saved to `~/.local/share/nvim/dashboard_art` and shown on every launch. No config edit needed.
+- **Change the default:** the art used before anything is picked is the `default` line at the top of `lua/plugins/dashboard.lua`. To go back to it, delete the saved file.
 
-  ```lua
-  local art = "fox" -- any name from the list above
-  ```
-
-  An unknown name falls back to `moon`.
+  An unknown saved name falls back to `moon`.
 
 ### Drawing your own
 
