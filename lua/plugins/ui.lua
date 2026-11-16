@@ -106,13 +106,42 @@ return {
     "lukas-reineke/indent-blankline.nvim",
     main = "ibl",
     event = { "BufReadPost", "BufNewFile" },
-    opts = {
-      indent = {
-        char = "│",
-      },
-      scope = {
-        enabled = true,
-      },
-    },
+    config = function()
+      -- Fade the guides toward the editor background. Re-derived on every
+      -- :colorscheme via ibl's HIGHLIGHT_SETUP hook, so it works for any theme.
+      -- Lower = fainter (0 = invisible, 1 = theme default).
+      local INDENT_ALPHA, SCOPE_ALPHA = 0.2, 0.3
+
+      local function fade(alpha, ...)
+        local bg = vim.api.nvim_get_hl(0, { name = "Normal", link = false }).bg
+        local fg
+        for _, name in ipairs({ ... }) do
+          fg = vim.api.nvim_get_hl(0, { name = name, link = false }).fg
+          if fg then
+            break
+          end
+        end
+        if not (fg and bg) then
+          return { fg = fg } -- transparent theme: nothing to blend against
+        end
+        local function ch(c, shift) return math.floor(c / 2 ^ shift) % 256 end
+        local out = 0
+        for _, s in ipairs({ 16, 8, 0 }) do
+          out = out + math.floor(ch(fg, s) * alpha + ch(bg, s) * (1 - alpha) + 0.5) * 2 ^ s
+        end
+        return { fg = out, nocombine = true }
+      end
+
+      local hooks = require("ibl.hooks")
+      hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
+        vim.api.nvim_set_hl(0, "IblIndentFaded", fade(INDENT_ALPHA, "IblIndent", "Whitespace", "NonText"))
+        vim.api.nvim_set_hl(0, "IblScopeFaded", fade(SCOPE_ALPHA, "IblScope", "LineNr", "NonText"))
+      end)
+
+      require("ibl").setup({
+        indent = { char = "│", highlight = "IblIndentFaded" },
+        scope = { enabled = true, highlight = "IblScopeFaded" },
+      })
+    end,
   },
 }
