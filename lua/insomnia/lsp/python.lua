@@ -18,6 +18,8 @@ end
 -- basedpyright: types, hover, go-to-definition, and "Add import" quick fixes
 -- (plain pyright has no import code actions; that part of Pylance is closed source)
 vim.lsp.config("basedpyright", {
+  -- Messages follow the system locale (LANG); force English
+  cmd_env = { LC_ALL = "en_US.UTF-8" },
   before_init = function(_, config) config.settings.python = { pythonPath = get_python_path(config.root_dir) } end,
   settings = {
     basedpyright = {
