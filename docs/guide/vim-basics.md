@@ -43,7 +43,7 @@ The system clipboard isn't shared: copy to it with `<leader>y`.
 | ---------------------- | ---------------------------------------- |
 | `/text` / `?text`      | Search forward / backward                |
 | `n` / `N`, `*` / `#`   | Next / previous match, word under cursor |
-| `:noh`                 | Clear highlight                          |
+| `Esc` (or `:noh`)       | Clear highlight                          |
 | `:%s/old/new/g` (`gc`) | Replace all (confirm each)               |
 
 Search ignores case unless you type a capital letter.
