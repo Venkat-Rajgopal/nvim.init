@@ -8,6 +8,37 @@
 - Back to the default: delete `~/.local/share/nvim/last_theme`.
 - Add a theme: add `{ "author/theme.nvim", lazy = true }` to `lua/plugins/colorscheme.lua`.
 
+## Color schemes for iTerm
+
+Neovim draws its own colours (`termguicolors`), so iTerm's colours only show in the shell and the thin padding around the editor. Give your iTerm profile the same colours as the theme you use most, and nothing changes colour when you open or quit Neovim.
+
+| Theme | iTerm preset | Download |
+| --- | --- | --- |
+| `catppuccin-macchiato` (default) | `catppuccin-macchiato.itermcolors` | [catppuccin/iterm](https://github.com/catppuccin/iterm/tree/main/colors) |
+| `catppuccin-mocha` / `-frappe` / `-latte` | `catppuccin-<flavour>.itermcolors` | [catppuccin/iterm](https://github.com/catppuccin/iterm/tree/main/colors) |
+| `tokyonight-night` / `-storm` / `-moon` / `-day` | `tokyonight_<style>.itermcolors` | [tokyonight.nvim extras](https://github.com/folke/tokyonight.nvim/tree/main/extras/iterm) |
+| `kanagawa-wave` / `-dragon` | `kanagawa.itermcolors`, `kanagawa_dragon.itermcolors` | [kanagawa.nvim extras](https://github.com/rebelot/kanagawa.nvim/tree/master/extras/iterm) |
+| `rose-pine` / `-moon` / `-dawn` | `rose-pine[-moon\|-dawn].itermcolors` | [rose-pine/iterm](https://github.com/rose-pine/iterm) |
+| `cyberdream` / `-muted` / `-light` | `cyberdream[-muted\|-light].itermcolors` | [cyberdream.nvim extras](https://github.com/scottmckendry/cyberdream.nvim/tree/main/extras/iterm2) |
+| `nordic` | `nordic.itermcolors` | [nordic.nvim platforms](https://github.com/AlexvZyl/nordic.nvim/tree/main/platforms/iTerm2) |
+| `everforest` | `Everforest Dark Med.itermcolors` | [iTerm2-Color-Schemes](https://github.com/mbadolato/iTerm2-Color-Schemes/tree/master/schemes) (community port) |
+
+`kanagawa-lotus` has no iTerm preset.
+
+To apply one:
+
+1. Download your preferred flavour(s) from the link above (open the `.itermcolors` file, then **Download raw file**).
+2. Launch iTerm and open settings (`⌘ ,`).
+3. Select the **Profiles** tab and select your profile to edit.
+4. Go to **Colors** → **Color Presets…** → **Import…**
+5. Select the file(s) downloaded in step 1.
+6. Click **Color Presets…** again and choose your flavour.
+7. Enjoy! ✨
+
+::: tip
+Set **Minimum Contrast** (same Colors tab) to `0`. iTerm applies it to every app, so anything higher shifts the theme's dim colours: comments, indent guides and line numbers.
+:::
+
 ## Dashboard
 
 `nvim` with no file opens the snacks.nvim dashboard: pixel art, shortcuts (`f` find, `g` grep, `r` recent, `e` tree, `c` config, `L` Lazy, `q` quit) and your 5 most recent files (`1`–`5`).
