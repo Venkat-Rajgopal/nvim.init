@@ -1,3 +1,5 @@
+[![Docs](https://github.com/Venkat-Rajgopal/nvim.init/actions/workflows/docs.yml/badge.svg)](https://github.com/Venkat-Rajgopal/nvim.init/actions/workflows/docs.yml)
+
 <p align="center">
   <img src="docs/public/owl.svg" alt="Pixel-art owl from the dashboard" width="160">
 </p>
