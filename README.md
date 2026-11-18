@@ -17,9 +17,9 @@ Needs Neovim 0.12+, `git`, a C compiler, `tree-sitter-cli`, `ripgrep`, Node.js 2
 brew install neovim tree-sitter-cli ripgrep node
 git clone https://github.com/Venkat-Rajgopal/nvim.init.git ~/.config/nvim
 
-# Debian, Ubuntu, Raspberry Pi OS: installs whatever is missing
-git clone https://github.com/Venkat-Rajgopal/nvim.init.git ~/.config/nvim
-~/.config/nvim/install.sh
+# Debian, Ubuntu, Raspberry Pi OS: installs whatever is missing; run again to update
+sudo apt update && sudo apt install -y curl
+curl -fsSL https://raw.githubusercontent.com/Venkat-Rajgopal/nvim.init/main/install.sh | bash
 ```
 
 Start `nvim`; plugins, parsers and language servers install on the first start. `<leader>` is `Space`: press it and wait to see every key.

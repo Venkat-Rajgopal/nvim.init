@@ -19,13 +19,14 @@ nvim
 
 ## Linux (Debian, Ubuntu)
 
-On `apt` systems (`x86_64` or `arm64`), `install.sh` installs whatever is missing, links the config to `~/.config/nvim`, installs the plugins and builds the parsers:
+On `apt` systems (`x86_64` or `arm64`), `install.sh` installs whatever is missing, clones the config to `~/.config/nvim`, installs the plugins and builds the parsers:
 
 ```shell
-sudo apt update && sudo apt install -y git
-git clone https://github.com/Venkat-Rajgopal/nvim.init.git ~/.config/nvim
-~/.config/nvim/install.sh
+sudo apt update && sudo apt install -y curl
+curl -fsSL https://raw.githubusercontent.com/Venkat-Rajgopal/nvim.init/main/install.sh | bash
 ```
+
+Run the same command again to update. If `~/.config/nvim` is already a clone of this repo, it's pulled; anything else there is moved to `nvim.bak.<date>`. Run from a clone somewhere else, `install.sh` links that clone instead.
 
 `install.sh --check` only reports what's missing. The script leaves a recent enough Neovim alone; to upgrade to the latest release, run `sudo rm /usr/local/bin/nvim && ~/.config/nvim/install.sh`.
 

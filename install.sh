@@ -1,15 +1,21 @@
 #!/usr/bin/env bash
 # Set up this Neovim config on apt-based Linux: Debian, Ubuntu, 64-bit Raspberry Pi OS.
 # Installs what's missing, puts the config in ~/.config/nvim and installs the plugins.
+# Safe to run again: it also updates an existing checkout.
 # Docs: https://venkat-rajgopal.github.io/nvim.init/guide/install
 #
+#   curl -fsSL https://raw.githubusercontent.com/Venkat-Rajgopal/nvim.init/main/install.sh | bash
 #   ./install.sh           check, install, set up
 #   ./install.sh --check   only report what's missing
 set -euo pipefail
 
 REPO_URL="https://github.com/Venkat-Rajgopal/nvim.init.git"
 CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/nvim"
-SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-.}")" && pwd -P)"
+# Empty when piped into bash: then there's no checkout to link, so clone one
+SOURCE_DIR=""
+if [ -f "${BASH_SOURCE[0]:-}" ]; then
+  SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+fi
 
 NVIM_MIN=0.12
 NODE_MIN=22     # markdownlint needs 22; apt ships older
@@ -103,28 +109,41 @@ install_tree_sitter() {
   tree-sitter --version >/dev/null 2>&1 || $SUDO npm install -g "tree-sitter-cli@$TREE_SITTER_MIN"
 }
 
-# Run from a checkout elsewhere: link it. Run on its own: clone. Anything else that's
-# already at ~/.config/nvim is moved aside, never deleted.
+# A clone of this repo, whatever the remote's spelling (https or ssh, with or without .git)
+is_this_repo() {
+  local url
+  url="$(git -C "$1" remote get-url origin 2>/dev/null)" || return 1
+  url="$(printf '%s' "$url" | tr '[:upper:]' '[:lower:]' | sed 's#^.*github\.com[:/]##; s#/*$##; s#\.git$##')"
+  [ "$url" = "venkat-rajgopal/nvim.init" ]
+}
+
+move_aside() {
+  [ -e "$CONFIG_DIR" ] || [ -L "$CONFIG_DIR" ] || return 0
+  local backup
+  backup="$CONFIG_DIR.bak.$(date +%Y%m%d-%H%M%S)"
+  mv "$CONFIG_DIR" "$backup"
+  printf 'Moved the existing config to %s\n' "$backup"
+}
+
+# Run from a checkout elsewhere: link it. Already a clone: update it. Otherwise: clone.
+# Anything else that's already at ~/.config/nvim is moved aside, never deleted.
 install_config() {
   local target
   target="$(cd "$CONFIG_DIR" 2>/dev/null && pwd -P || true)"
-  [ "$target" != "$SOURCE_DIR" ] || return 0
-
-  local has_source=0
-  [ -f "$SOURCE_DIR/init.lua" ] && [ -f "$SOURCE_DIR/install.sh" ] && has_source=1
-  [ "$has_source" -eq 1 ] || [ ! -f "$CONFIG_DIR/lua/insomnia/init.lua" ] || return 0
-
-  log "Putting the config in $CONFIG_DIR"
   mkdir -p "$(dirname "$CONFIG_DIR")"
-  if [ -e "$CONFIG_DIR" ] || [ -L "$CONFIG_DIR" ]; then
-    local backup
-    backup="$CONFIG_DIR.bak.$(date +%Y%m%d-%H%M%S)"
-    mv "$CONFIG_DIR" "$backup"
-    printf 'Moved the existing config to %s\n' "$backup"
-  fi
-  if [ "$has_source" -eq 1 ]; then
+
+  if [ -n "$SOURCE_DIR" ] && [ "$target" != "$SOURCE_DIR" ] \
+    && [ -f "$SOURCE_DIR/init.lua" ] && [ -f "$SOURCE_DIR/install.sh" ]; then
+    log "Linking $SOURCE_DIR to $CONFIG_DIR"
+    move_aside
     ln -s "$SOURCE_DIR" "$CONFIG_DIR"
+  elif is_this_repo "$CONFIG_DIR"; then
+    log "Updating the config in $CONFIG_DIR"
+    git -C "$CONFIG_DIR" pull --ff-only \
+      || printf 'warning: could not update %s (local changes?), keeping it as it is\n' "$CONFIG_DIR"
   else
+    log "Putting the config in $CONFIG_DIR"
+    move_aside
     git clone "$REPO_URL" "$CONFIG_DIR"
   fi
 }
@@ -139,21 +158,28 @@ install_plugins() {
   [ "$lock_clean" -eq 0 ] || git -C "$CONFIG_DIR" checkout -- lazy-lock.json
 }
 
-check_platform
-if [ "${1:-}" = "--check" ]; then
-  report
-  exit
-fi
+# All in one function, so bash has read the whole script before anything runs:
+# that keeps curl | bash from feeding the rest of the script to apt or nvim, and
+# lets git pull replace this file while it runs.
+main() {
+  check_platform
+  if [ "${1:-}" = "--check" ]; then
+    report
+    exit
+  fi
 
-report || true
-install_apt_packages
-install_neovim
-install_node
-install_tree_sitter
-report || die "something is still missing, see above"
-install_config
-install_plugins
+  report || true
+  install_apt_packages
+  install_neovim
+  install_node
+  install_tree_sitter
+  report || die "something is still missing, see above"
+  install_config
+  install_plugins
 
-log "Done"
-printf 'Start nvim: the language servers install on the first start, watch them with :Mason.\n'
-printf 'Next steps: https://venkat-rajgopal.github.io/nvim.init/guide/install#first-start\n'
+  log "Done"
+  printf 'Start nvim: the language servers install on the first start, watch them with :Mason.\n'
+  printf 'Next steps: https://venkat-rajgopal.github.io/nvim.init/guide/install#first-start\n'
+}
+
+main "$@"

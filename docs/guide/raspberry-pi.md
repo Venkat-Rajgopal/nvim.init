@@ -5,9 +5,8 @@ Tested on a Pi 3B with 1 GB of RAM. It needs the **64-bit** Raspberry Pi OS (Neo
 ## Install
 
 ```shell
-sudo apt update && sudo apt install -y git
-git clone https://github.com/Venkat-Rajgopal/nvim.init.git ~/.config/nvim
-~/.config/nvim/install.sh
+sudo apt update && sudo apt install -y curl
+curl -fsSL https://raw.githubusercontent.com/Venkat-Rajgopal/nvim.init/main/install.sh | bash
 ```
 
 The script installs only what's missing, so it's safe to run again:
@@ -19,7 +18,7 @@ The script installs only what's missing, so it's safe to run again:
 | Neovim       | Official release in `/opt`, linked to `/usr/local/bin/nvim` (apt's is too old)               |
 | Node.js      | Node 24 from NodeSource, if you don't have 22+                                               |
 | tree-sitter  | `tree-sitter-cli` from npm, or 0.25.10 on Bookworm (see [Troubleshooting](#troubleshooting)) |
-| Config       | Links the clone to `~/.config/nvim`. An existing config is moved to `nvim.bak.<date>`        |
+| Config       | Clones to `~/.config/nvim`, or pulls if it's already a clone. Anything else is moved aside   |
 | Plugins      | Installs the versions in `lazy-lock.json` and builds the parsers                             |
 
 Then start `nvim`; Mason installs the servers on the first start.
@@ -44,14 +43,14 @@ Then start `nvim`; Mason installs the servers on the first start.
 
 ```shell
 free -h                                  # memory while you work
-git -C ~/.config/nvim pull && ~/.config/nvim/install.sh
+~/.config/nvim/install.sh                # pulls the config, installs what's new
 ```
 
 ## Troubleshooting
 
 | Problem                                                        | Fix                                                                                     |
 | -------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| `npm not found; Mason can't install: ...`                      | Run `./install.sh`, then restart `nvim`                                                 |
+| `npm not found; Mason can't install: ...`                      | Run `~/.config/nvim/install.sh`, then restart `nvim`                                                 |
 | `failed to install ...`                                        | `:MasonLog` has the reason. `ty` needs `python3-venv`                                   |
 | `:checkhealth nvim-treesitter` wants `tree-sitter-cli v0.26.1` | Expected on Bookworm: newer builds need glibc 2.39. All parsers here build with 0.25.10 |
 | Everything is slow or swapping                                 | Close other files, or check memory with `free -h`                                       |
