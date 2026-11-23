@@ -45,10 +45,14 @@ return {
     keys = {
       { "<Tab>", "<Cmd>BufferLineCycleNext<CR>", desc = "Next buffer" },
       { "<S-Tab>", "<Cmd>BufferLineCyclePrev<CR>", desc = "Previous buffer" },
+      -- Unlike :bd, keeps the window open (showing the next buffer), so focus
+      -- doesn't fall back to the file explorer when the last editor window would close.
+      { "<leader>bd", function() Snacks.bufdelete() end, desc = "Close buffer" },
     },
     opts = {
       options = {
         mode = "buffers", -- or "tabs"
+        close_command = function(n) Snacks.bufdelete(n) end, -- same as <leader>bd
         diagnostics = "nvim_lsp",
         separator_style = { "", "" }, -- no separators: tabs read as solid blocks
         tab_size = 24, -- wider tabs make the bar look roomier

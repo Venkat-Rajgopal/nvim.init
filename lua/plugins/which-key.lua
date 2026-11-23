@@ -9,6 +9,7 @@ return {
       preset = "modern",
       -- Group names; the keys inside come from each mapping's desc
       spec = {
+        { "<leader>b", group = "buffer" },
         { "<leader>c", group = "code" },
         { "<leader>f", group = "find" },
         { "<leader>g", group = "git" },

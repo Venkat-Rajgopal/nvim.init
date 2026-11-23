@@ -66,4 +66,4 @@ Search ignores case unless you type a capital letter.
 | `Ctrl-h/j/k/l`      | Move between splits    |
 | `Ctrl-w q`          | Close split            |
 | `Tab` / `Shift-Tab` | Next / previous buffer |
-| `:bd`               | Close buffer           |
+| `Space bd`          | Close buffer           |
