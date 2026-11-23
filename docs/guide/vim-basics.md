@@ -37,13 +37,23 @@ Line numbers are relative, so `5j` and `3k` jump to what you see.
 
 The system clipboard isn't shared: copy to it with `<leader>y`.
 
+## Comment
+
+| Keys             | Action                                    |
+| ---------------- | ----------------------------------------- |
+| `gc` (selection) | Toggle comments on the selected lines     |
+| `gcc` / `5gcc`   | Toggle the current line / the next 5      |
+| `gcap` / `gcj`   | Toggle the paragraph / this line and next |
+
+Comments follow the file type: `--` in Lua, `#` in Python. Running it again uncomments.
+
 ## Search and replace
 
 | Keys                   | Action                                   |
 | ---------------------- | ---------------------------------------- |
 | `/text` / `?text`      | Search forward / backward                |
 | `n` / `N`, `*` / `#`   | Next / previous match, word under cursor |
-| `Esc` (or `:noh`)       | Clear highlight                          |
+| `Esc` (or `:noh`)      | Clear highlight                          |
 | `:%s/old/new/g` (`gc`) | Replace all (confirm each)               |
 
 Search ignores case unless you type a capital letter.
