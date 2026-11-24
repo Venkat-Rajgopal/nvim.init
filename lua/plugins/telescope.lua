@@ -1,3 +1,9 @@
+-- Directories <leader>ff never lists, even though it shows hidden and gitignored files
+local SKIP_DIRS = {
+  ".git", "node_modules", "target", "dist", "build", ".venv", "venv", "__pycache__",
+  ".pytest_cache", ".mypy_cache", ".ruff_cache", ".terraform", ".next", ".cache",
+}
+
 return {
   {
     "nvim-telescope/telescope.nvim",
@@ -5,7 +11,19 @@ return {
     cmd = "Telescope",
     keys = {
       { "<C-p>", function() require("telescope.builtin").git_files() end, desc = "Git files" },
-      { "<leader>ff", function() require("telescope.builtin").find_files() end, desc = "Find files" },
+      -- Hidden (.github, .iac) and gitignored (local notes, .env) files included; build output,
+      -- virtualenvs and caches in SKIP_DIRS are not
+      {
+        "<leader>ff",
+        function()
+          local cmd = { "rg", "--files", "--hidden", "--no-ignore", "--color", "never" }
+          for _, dir in ipairs(SKIP_DIRS) do
+            vim.list_extend(cmd, { "--glob", "!**/" .. dir .. "/" })
+          end
+          require("telescope.builtin").find_files({ find_command = cmd })
+        end,
+        desc = "Find files",
+      },
       { "<leader>fg", function() require("telescope.builtin").live_grep() end, desc = "Grep in project" },
       { "<leader>fw", function() require("telescope.builtin").grep_string() end, desc = "Grep word under cursor" },
       { "<leader>fb", function() require("telescope.builtin").buffers() end, desc = "Open buffers" },
@@ -22,7 +40,8 @@ return {
     },
     opts = {
       defaults = {
-        file_ignore_patterns = { "node_modules", ".git" },
+        -- Lua patterns: a bare ".git" would also hide .github/ and any path containing "git"
+        file_ignore_patterns = { "^%.git/", "/%.git/", "node_modules/" },
         -- you could customize layout, prompts, icons, etc. here
       },
       -- File icons are a per-picker option; off without a Nerd Font (lua/insomnia/icons.lua)
