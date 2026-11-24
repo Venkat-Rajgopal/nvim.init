@@ -247,6 +247,55 @@ local function keymaps_page()
       table.insert(lines, "")
     end
   end
+  -- Neovim's own LSP keys (grr, grn, ...). Read from Neovim, so the table follows the
+  -- installed version; a key the config remaps loses its vim.lsp desc and drops out.
+  local builtin_names = {
+    ["vim.lsp.buf.references()"] = "List references",
+    ["vim.lsp.buf.rename()"] = "Rename symbol",
+    ["vim.lsp.buf.code_action()"] = "Code action",
+    ["vim.lsp.buf.implementation()"] = "Go to implementation",
+    ["vim.lsp.buf.type_definition()"] = "Go to type definition",
+    ["vim.lsp.buf.document_symbol()"] = "Symbols in file (location list)",
+    ["vim.lsp.buf.signature_help()"] = "Signature help",
+    ["vim.lsp.codelens.run()"] = "Run code lens",
+  }
+  local builtin = {} ---@type table<string, {lhs:string, desc:string, modes:string[]}>
+  for _, mode in ipairs({ "n", "x", "i" }) do
+    for _, k in ipairs(vim.api.nvim_get_keymap(mode)) do
+      if (k.desc or ""):find("^vim%.lsp%.") then
+        local row = builtin[k.lhs] or { lhs = k.lhs, desc = k.desc, modes = {} }
+        table.insert(row.modes, mode_names[mode] or mode)
+        builtin[k.lhs] = row
+      end
+    end
+  end
+  local rows = vim.tbl_values(builtin)
+  if #rows > 0 then
+    table.sort(rows, function(a, b) return a.lhs:lower() < b.lhs:lower() end)
+    table.insert(lines, "## Built into Neovim")
+    table.insert(lines, "")
+    table.insert(
+      lines,
+      "LSP keys that come with Neovim, not this config. They work once a language server attaches."
+        .. " Use `gd` to go to a definition and `grr` to list references."
+    )
+    table.insert(lines, "")
+    table.insert(lines, "| Keys | Action | Mode | Calls |")
+    table.insert(lines, "| --- | --- | --- | --- |")
+    for _, r in ipairs(rows) do
+      table.insert(
+        lines,
+        ("| %s | %s | %s | %s |"):format(
+          code(r.lhs),
+          cell(builtin_names[r.desc] or r.desc),
+          table.concat(r.modes, ", "),
+          code(r.desc)
+        )
+      )
+    end
+    table.insert(lines, "")
+  end
+
   -- blink.cmp keys only act while the completion menu is open, so they get their own table
   local blink = opts_of("blink.cmp").keymap or {}
   local keys = vim.tbl_filter(function(k) return k ~= "preset" end, vim.tbl_keys(blink))

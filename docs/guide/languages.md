@@ -2,6 +2,21 @@
 
 The [language reference](/reference/languages) lists each server, formatter and linter. This page covers what isn't obvious from the list.
 
+## Move around code
+
+With the cursor on a name, once the language server has started:
+
+| Keys | Does |
+| --- | --- |
+| `gd` | Go to the definition |
+| `grr` | List every place it's used |
+| `K` | Show its documentation |
+| `grn` or `<leader>rn` | Rename it everywhere |
+| `gra` or `<leader>ca` | Code actions and quick fixes |
+| `<C-o>` | Jump back to where you were |
+
+`grr`, `grn`, `gra` and the other `gr…` keys come with Neovim; the full list is in [the keymaps reference](/reference/keymaps#built-into-neovim). `gri` (go to implementation) only finds something for code with a separate interface and implementation, such as an abstract method and its subclasses. For a plain Python function it returns nothing: use `gd`.
+
 ## Python uses uv
 
 `basedpyright` picks the interpreter in this order:
