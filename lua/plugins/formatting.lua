@@ -36,6 +36,9 @@ return {
       },
       formatters = {
         jq = { args = { "--indent", "2", "." } }, -- 2 spaces regardless of shiftwidth
+        -- prettier 3 skips files matched by .gitignore and returns them unchanged;
+        -- honour only .prettierignore so gitignored notes still format
+        prettier = { prepend_args = { "--ignore-path", ".prettierignore" } },
       },
       format_on_save = function(bufnr)
         if skip_on_save(bufnr) then
