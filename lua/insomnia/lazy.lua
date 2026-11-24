@@ -19,10 +19,12 @@ if not vim.uv.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+local icons = require("insomnia.icons")
+
 require("lazy").setup({
   spec = { { import = "plugins" } },
   install = { colorscheme = { "catppuccin-macchiato" } },
   checker = { enabled = false },
   rocks = { enabled = false },
-  ui = { border = "rounded" },
+  ui = { border = "rounded", icons = not icons.nerd and icons.ascii.lazy or nil }, -- nil keeps the defaults
 })

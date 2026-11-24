@@ -1,3 +1,5 @@
+local icons = require("insomnia.icons")
+
 return {
   {
     "nvim-tree/nvim-tree.lua",
@@ -32,11 +34,12 @@ return {
         indent_markers = { enable = true },
         icons = {
           show = {
-            file = true,
-            folder = true,
+            file = icons.nerd,
+            folder = icons.nerd,
             folder_arrow = true,
             git = true,
           },
+          glyphs = not icons.nerd and icons.ascii.tree or nil,
         },
       },
     },

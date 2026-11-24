@@ -1,4 +1,4 @@
-local icon = vim.fn.nr2char -- Nerd Font glyphs by codepoint
+local icons = require("insomnia.icons")
 
 -- Diff counts from gitsigns (already computed per buffer) instead of lualine running git
 local function gitsigns_diff()
@@ -19,9 +19,9 @@ return {
     opts = {
       options = {
         theme = "auto", -- follows the active colorscheme
-        icons_enabled = true,
-        component_separators = { left = icon(0xe0b5), right = icon(0xe0b7) }, -- thin rounded
-        section_separators = { left = icon(0xe0b4), right = icon(0xe0b6) }, -- rounded
+        icons_enabled = icons.nerd, -- off: branch, filetype and diagnostics show as text
+        component_separators = icons.lualine.component,
+        section_separators = icons.lualine.section,
         globalstatus = true, -- one statusline across splits
         disabled_filetypes = { statusline = { "snacks_dashboard" } },
       },
@@ -56,11 +56,16 @@ return {
         diagnostics = "nvim_lsp",
         separator_style = { "", "" }, -- no separators: tabs read as solid blocks
         tab_size = 24, -- wider tabs make the bar look roomier
-        show_buffer_icons = true,
+        show_buffer_icons = icons.nerd,
         show_close_icon = false,
+        -- plain-text markers when icons are off (nil keeps bufferline's Nerd Font defaults)
+        buffer_close_icon = not icons.nerd and "x" or nil,
+        modified_icon = not icons.nerd and "+" or nil,
+        left_trunc_marker = not icons.nerd and "<" or nil,
+        right_trunc_marker = not icons.nerd and ">" or nil,
         -- extra space after the file icon so it stands out more
         get_element_icon = function(element)
-          if element.directory then
+          if element.directory or not icons.nerd then
             return nil
           end -- let bufferline draw its folder icon
           local name = vim.fn.fnamemodify(element.path, ":t")

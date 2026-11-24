@@ -2,6 +2,8 @@
 -- :DashboardArt <name> (or no name, for a picker) switches the art and remembers it, like the
 -- theme picker. The choice is saved to ~/.local/share/nvim/dashboard_art; `default` is used until
 -- something is picked (names: see lua/insomnia/dashboard_art.lua).
+local I = require("insomnia.icons").dashboard
+local nerd = require("insomnia.icons").nerd
 local default = "owl"
 local state_file = vim.fn.stdpath("data") .. "/dashboard_art"
 
@@ -46,23 +48,25 @@ return {
     opts = {
       dashboard = {
         enabled = true,
+        -- No Nerd Font: drop the file icons of recent files too (nil keeps snacks' formatter)
+        formats = not nerd and { icon = function() return { "", width = 0 } end } or nil,
         preset = {
           -- stylua: ignore
           keys = {
-            { icon = " ", key = "f", desc = "Find file", action = ":Telescope find_files" },
-            { icon = " ", key = "g", desc = "Live grep", action = ":Telescope live_grep" },
-            { icon = " ", key = "r", desc = "Recent files", action = ":Telescope oldfiles" },
-            { icon = " ", key = "e", desc = "File tree", action = ":NvimTreeToggle" },
-            { icon = " ", key = "c", desc = "Config", action = ":e ~/.config/nvim/init.lua" },
-            { icon = "󰒲 ", key = "L", desc = "Lazy", action = ":Lazy" },
-            { icon = " ", key = "q", desc = "Quit", action = ":qa" },
+            { icon = I.find, key = "f", desc = "Find file", action = ":Telescope find_files" },
+            { icon = I.grep, key = "g", desc = "Live grep", action = ":Telescope live_grep" },
+            { icon = I.recent, key = "r", desc = "Recent files", action = ":Telescope oldfiles" },
+            { icon = I.tree, key = "e", desc = "File tree", action = ":NvimTreeToggle" },
+            { icon = I.config, key = "c", desc = "Config", action = ":e ~/.config/nvim/init.lua" },
+            { icon = I.lazy, key = "L", desc = "Lazy", action = ":Lazy" },
+            { icon = I.quit, key = "q", desc = "Quit", action = ":qa" },
           },
         },
         sections = {
           header,
           { section = "keys", gap = 1, padding = 1 },
-          { icon = " ", title = "Recent files", section = "recent_files", limit = 5, indent = 2, padding = 1 },
-          { section = "startup" },
+          { icon = I.recent_title, title = "Recent files", section = "recent_files", limit = 5, indent = 2, padding = 1 },
+          { section = "startup", icon = I.startup },
         },
       },
     },

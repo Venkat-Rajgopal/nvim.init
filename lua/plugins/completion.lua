@@ -18,7 +18,13 @@ return {
       },
       completion = {
         list = { selection = { preselect = false, auto_insert = true } },
-        menu = { border = "rounded" },
+        menu = {
+          border = "rounded",
+          -- Without a Nerd Font, show the kind as a word instead of an icon
+          draw = not require("insomnia.icons").nerd and {
+            columns = { { "label", "label_description", gap = 1 }, { "kind" } },
+          } or nil,
+        },
         documentation = { auto_show = true, window = { border = "rounded" } },
       },
       sources = {

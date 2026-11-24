@@ -53,3 +53,5 @@ brew install --cask font-meslo-lg-nerd-font
 ```
 
 Then pick **MesloLGS Nerd Font Mono** in your terminal (iTerm: Settings → Profiles → Text → Font).
+
+Meslo is only the default: any Nerd Font works. [Fonts](/guide/look#fonts) in the look guide compares a few. No Nerd Font at all? Run `:Icons ascii` and restart; see [No Nerd Font](/guide/look#no-nerd-font).

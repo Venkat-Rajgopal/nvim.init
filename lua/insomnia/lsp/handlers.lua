@@ -1,15 +1,15 @@
 -- Diagnostics, borders, capabilities and LSP keymaps for every server.
-local icon = vim.fn.nr2char -- Nerd Font glyphs by codepoint
+local icons = require("insomnia.icons").diagnostics
 local severity = vim.diagnostic.severity
 
 vim.diagnostic.config({
   virtual_text = true,
   signs = {
     text = {
-      [severity.ERROR] = icon(0xf057),
-      [severity.WARN] = icon(0xf071),
-      [severity.HINT] = icon(0xf0eb),
-      [severity.INFO] = icon(0xf05a),
+      [severity.ERROR] = icons.error,
+      [severity.WARN] = icons.warn,
+      [severity.HINT] = icons.hint,
+      [severity.INFO] = icons.info,
     },
   },
   update_in_insert = false,

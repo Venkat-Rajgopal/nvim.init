@@ -39,6 +39,46 @@ To apply one:
 Set **Minimum Contrast** (same Colors tab) to `0`. iTerm applies it to every app, so anything higher shifts the theme's dim colours: comments, indent guides and line numbers.
 :::
 
+## Fonts
+
+The font belongs to your terminal, not to Neovim: set it in the terminal's settings (iTerm: Settings → Profiles → Text → Font), and over SSH set it on the computer you connect from. Any **Nerd Fonts v3** font gives you the icons. Pick the **Mono** variant (for example `JetBrainsMono Nerd Font Mono`), so icons take one cell and line up.
+
+| Font | Feel | Ligatures | Cursive italics | macOS (`brew install --cask …`) | Linux archive |
+| --- | --- | --- | --- | --- | --- |
+| Meslo (default) | Classic, Menlo-like | No | No | `font-meslo-lg-nerd-font` | `Meslo` |
+| JetBrains Mono | Tall letters, very legible | Yes | No | `font-jetbrains-mono-nerd-font` | `JetBrainsMono` |
+| Fira Code | Popular, friendly | Yes | No | `font-fira-code-nerd-font` | `FiraCode` |
+| Hack | Plain and sturdy, good at small sizes | No | No | `font-hack-nerd-font` | `Hack` |
+| Iosevka Term | Narrow: more columns fit side by side | Yes | No | `font-iosevka-term-nerd-font` | `IosevkaTerm` |
+| Caskaydia Cove | Cascadia Code (Windows Terminal) | Yes | Yes | `font-caskaydia-cove-nerd-font` | `CascadiaCode` |
+| Victor Mono | Slim, handwritten italics | Yes | Yes | `font-victor-mono-nerd-font` | `VictorMono` |
+| Maple Mono | Rounded, handwritten italics | Yes | Yes | `font-maple-mono-nf` | [Maple releases](https://github.com/subframe7536/maple-font/releases) (`MapleMono-NF`) |
+
+See them side by side at [programmingfonts.org](https://www.programmingfonts.org/) or the [Nerd Fonts downloads](https://www.nerdfonts.com/font-downloads) page.
+
+On Linux (including a Pi with a desktop), put the archive in `~/.local/share/fonts`:
+
+```shell
+font=JetBrainsMono   # "Linux archive" column above
+mkdir -p ~/.local/share/fonts/$font
+curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/$font.tar.xz \
+  | tar -xJ -C ~/.local/share/fonts/$font
+fc-cache -f
+```
+
+::: tip
+Ligatures (`->` drawn as an arrow, `!=` as `≠`) are off in iTerm by default: Settings → Profiles → Text → **Use ligatures**. It makes iTerm draw a little slower.
+:::
+
+### No Nerd Font
+
+On a terminal without a Nerd Font (the Pi's own console, someone else's computer, an old patched font), icons show as blank boxes or `?`. Switch them to plain text:
+
+- **`:Icons ascii`**, then restart Neovim. It's remembered in `~/.local/share/nvim/icons`, like the theme. `:Icons nerd` switches back, and `:Icons` with no name opens a picker.
+- **For one session:** `NVIM_ICONS=ascii nvim`. It wins over the saved choice, so you can use it on a shared machine without changing anything.
+
+In ascii mode, the file tree, statusline, tabs, dashboard, Telescope and completion menu show no file icons. Diagnostics in the sign column read `E`, `W`, `H`, `I`, and which-key labels keys as `C-`, `CR`, `Space`. Common symbols that every font has (`│`, `●`, `✓`) stay. The icon set is in `lua/insomnia/icons.lua`.
+
 ## Dashboard
 
 `nvim` with no file opens the snacks.nvim dashboard: pixel art, shortcuts (`f` find, `g` grep, `r` recent, `e` tree, `c` config, `L` Lazy, `q` quit) and your 5 most recent files (`1`–`5`).

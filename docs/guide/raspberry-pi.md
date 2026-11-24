@@ -54,3 +54,4 @@ free -h                                  # memory while you work
 | `failed to install ...`                                        | `:MasonLog` has the reason. `ty` needs `python3-venv`                                   |
 | `:checkhealth nvim-treesitter` wants `tree-sitter-cli v0.26.1` | Expected on Bookworm: newer builds need glibc 2.39. All parsers here build with 0.25.10 |
 | Everything is slow or swapping                                 | Close other files, or check memory with `free -h`                                       |
+| Icons show as boxes or `?` on the Pi's own screen              | The console has no Nerd Font: `:Icons ascii`, then restart. Over SSH, the font is your computer's |
