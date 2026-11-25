@@ -83,6 +83,8 @@ In ascii mode, the file tree, statusline, tabs, dashboard, Telescope and complet
 
 `nvim` with no file opens the snacks.nvim dashboard: pixel art, shortcuts (`f` find, `g` grep, `r` recent, `e` tree, `c` config, `L` Lazy, `q` quit) and your 5 most recent files (`1`–`5`).
 
+To get back to it mid-session, press `<leader>bD`. It closes every buffer, asking about unsaved changes first just as `<leader>bd` does, and closes any splits. Then it opens the dashboard with the file tree beside it. If you cancel a save prompt, nothing else changes.
+
 ### Changing the art
 
 There are 12 pieces: `alien`, `bonsai`, `cactus`, `cat`, `coffee`, `fox`, `moon`, `mountains`, `mushroom`, `neovim`, `owl` (the default) and `rocket`.

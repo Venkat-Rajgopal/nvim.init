@@ -33,6 +33,37 @@ local function set_art(name)
   Snacks.dashboard.open()
 end
 
+-- <leader>bD: close every buffer, then show the dashboard with the file tree beside it.
+local function fresh_start()
+  Snacks.bufdelete.all() -- asks about unsaved changes, like <leader>bd
+  for _, b in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.bo[b].buflisted and vim.bo[b].modified then
+      return -- a save prompt was cancelled: leave things as they are
+    end
+  end
+  -- Work from an editor window, not the tree, and drop any splits
+  for _, w in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+    local ft = vim.bo[vim.api.nvim_win_get_buf(w)].filetype
+    if ft ~= "NvimTree" and vim.api.nvim_win_get_config(w).relative == "" then
+      vim.api.nvim_set_current_win(w)
+      break
+    end
+  end
+  if vim.bo.filetype == "NvimTree" then
+    vim.cmd("enew")
+  end
+  vim.cmd("silent! only")
+  -- Open the dashboard in this window (not as a full-screen float, which would hide the tree)
+  -- and drop the empty buffer bufdelete left behind, so the bufferline is clear
+  local empty = vim.api.nvim_get_current_buf()
+  Snacks.dashboard({ win = vim.api.nvim_get_current_win() })
+  if vim.api.nvim_buf_is_valid(empty) and vim.api.nvim_buf_get_name(empty) == "" and not vim.bo[empty].modified then
+    pcall(vim.api.nvim_buf_delete, empty, {})
+  end
+  vim.cmd("NvimTreeOpen")
+  vim.cmd("wincmd p") -- keep focus on the dashboard so its keys work
+end
+
 local function header()
   local A = require("insomnia.dashboard_art")
   vim.api.nvim_set_hl(0, "InsomniaTitle", { fg = (A.art[art] or A.art.moon).accent, bold = true })
@@ -45,6 +76,9 @@ end
 return {
   {
     "folke/snacks.nvim",
+    keys = {
+      { "<leader>bD", fresh_start, desc = "Close all buffers, show dashboard" },
+    },
     opts = {
       dashboard = {
         enabled = true,
