@@ -41,7 +41,11 @@ Set **Minimum Contrast** (same Colors tab) to `0`. iTerm applies it to every app
 
 ## Fonts
 
-The font belongs to your terminal, not to Neovim: set it in the terminal's settings (iTerm: Settings → Profiles → Text → Font), and over SSH set it on the computer you connect from. Any **Nerd Fonts v3** font gives you the icons. Pick the **Mono** variant (for example `JetBrainsMono Nerd Font Mono`), so icons take one cell and line up.
+The font belongs to your terminal, not to Neovim: set it in the terminal's settings (iTerm: Settings → Profiles → Text → Font), and over SSH set it on the computer you connect from. Any **Nerd Fonts v3** font gives you the icons. Each font comes in three variants, and the variant sets how big icons are:
+
+- **Nerd Font** (for example `JetBrainsMono Nerd Font`): icons are full size and spill into the space after them. This config leaves that space everywhere, so this is the one to pick.
+- **Nerd Font Mono**: every icon is squeezed into one cell, so icons look small next to the text.
+- **Nerd Font Propo**: for apps with proportional text, not terminals.
 
 | Font | Feel | Ligatures | Cursive italics | macOS (`brew install --cask …`) | Linux archive |
 | --- | --- | --- | --- | --- | --- |

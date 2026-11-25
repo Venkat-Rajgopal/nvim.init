@@ -52,6 +52,6 @@ Older patched fonts, such as the `MesloLGS NF` that powerlevel10k installs, show
 brew install --cask font-meslo-lg-nerd-font
 ```
 
-Then pick **MesloLGS Nerd Font Mono** in your terminal (iTerm: Settings → Profiles → Text → Font).
+Then pick **MesloLGS Nerd Font** in your terminal (iTerm: Settings → Profiles → Text → Font). Not the `Mono` variant: it shrinks icons to one cell. See [Fonts](/guide/look#fonts).
 
 Meslo is only the default: any Nerd Font works. [Fonts](/guide/look#fonts) in the look guide compares a few. No Nerd Font at all? Run `:Icons ascii` and restart; see [No Nerd Font](/guide/look#no-nerd-font).
