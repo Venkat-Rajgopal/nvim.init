@@ -25,6 +25,7 @@ return {
       },
     },
     opts = {
+      sync_root_with_cwd = true, -- show the project picked on the dashboard or with <leader>fp
       filters = {
         custom = { "^\\.git$", "^node_modules$", "^__pycache__$", "^\\.DS_Store$" }, -- press U in the tree to show them
       },

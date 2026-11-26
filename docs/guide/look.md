@@ -85,7 +85,17 @@ In ascii mode, the file tree, statusline, tabs, dashboard, Telescope and complet
 
 ## Dashboard
 
-`nvim` with no file opens the snacks.nvim dashboard: pixel art, shortcuts (`f` find, `g` grep, `r` recent, `e` tree, `c` config, `L` Lazy, `q` quit) and your 5 most recent files (`1`–`5`).
+`nvim` with no file opens the snacks.nvim dashboard: pixel art, shortcuts (`f` find, `g` grep, `r` recent, `p` projects, `e` tree, `c` config, `L` Lazy, `q` quit), then two boxes: your 5 most recent files (`1`–`5`) and your 5 most recent projects (`6`–`0`). In a wide window (about 170 columns or more), the boxes sit to the right of the shortcuts and the art stays centred above both; narrower, the boxes stack underneath. The layout follows the window as you resize it.
+
+### Projects
+
+A project is the git repository of a file you opened recently, so projects show up on their own as you work. Opening one, with its number key on the dashboard, `p` on the dashboard, or `<leader>fp` anywhere:
+
+- makes the project Neovim's working directory, as if you had started `nvim` there (`:pwd` shows it)
+- points `<leader>ff`, `<leader>fg` and new terminals at the project
+- opens the file tree on the project with the cursor in it, so you can browse to a file (from the dashboard, the dashboard stays beside it)
+
+`p` and `<leader>fp` list up to 30 projects, with type-to-filter. The list is built from Neovim's recent files (`:oldfiles`), so a project you haven't opened a file from yet isn't in it: start `nvim` in that directory once.
 
 To get back to it mid-session, press `<leader>bD`. It closes every buffer, asking about unsaved changes first just as `<leader>bd` does, and closes any splits. Then it opens the dashboard with the file tree beside it. If you cancel a save prompt, nothing else changes.
 

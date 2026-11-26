@@ -1,5 +1,5 @@
 -- Icons used across the UI, with a plain-text fallback for terminals without a Nerd Font
--- (a Raspberry Pi console, someone else's laptop, an old patched font that shows blanks).
+-- (a Raspberry Pi console, different machine an old patched font that shows blanks).
 --
 -- :Icons nerd|ascii switches and remembers the choice in ~/.local/share/nvim/icons; restart
 -- Neovim to apply it. NVIM_ICONS=ascii nvim does the same for one session. Default: nerd.
@@ -54,6 +54,7 @@ M.dashboard = {
   lazy = pick(icon(0xf04b2) .. " ", ""),
   quit = pick(icon(0xf011) .. " ", ""),
   recent_title = pick(icon(0xf017) .. " ", ""),
+  project = pick(icon(0xf401) .. " ", ""),
   startup = not M.nerd and "" or nil, -- nil = snacks' default
 }
 
