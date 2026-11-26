@@ -85,7 +85,7 @@ In ascii mode, the file tree, statusline, tabs, dashboard, Telescope and complet
 
 ## Dashboard
 
-`nvim` with no file opens the snacks.nvim dashboard: pixel art, shortcuts (`f` find, `g` grep, `r` recent, `p` projects, `e` tree, `c` config, `L` Lazy, `q` quit), then two boxes: your 5 most recent files (`1`–`5`) and your 5 most recent projects (`6`–`0`). In a wide window (about 170 columns or more), the boxes sit to the right of the shortcuts and the art stays centred above both; narrower, the boxes stack underneath. The layout follows the window as you resize it.
+`nvim` with no file opens the snacks.nvim dashboard: pixel art, shortcuts (`f` find, `g` grep, `e` tree, `c` config, `L` Lazy, `q` quit), then two boxes: your 5 most recent files (`1`–`5`) and your 5 most recent projects (`6`–`0`). The key in each box's title opens the full list: `r` for all recent files, `p` for all projects. In a wide window (about 170 columns or more), the boxes sit to the right of the shortcuts and the art stays centred above both; narrower, the boxes stack underneath. The layout follows the window as you resize it. On short windows the blank lines between shortcuts go, so everything still fits.
 
 ### Projects
 

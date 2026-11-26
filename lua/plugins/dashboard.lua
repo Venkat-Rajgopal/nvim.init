@@ -78,9 +78,18 @@ local function trunc_left(s, n)
   return "…" .. vim.fn.strcharpart(s, vim.fn.strchars(s) - (n - 1))
 end
 
-local function border(left, title, right)
-  local fill = W - vim.fn.strwidth(left .. title .. right)
-  return { text = { { left, hl = B }, { title, hl = "SnacksDashboardTitle" }, { ("─"):rep(fill) .. right, hl = B } } }
+-- `hint` is the key shown after the title, e.g. "(r)"
+local function border(left, title, right, hint)
+  hint = hint or ""
+  local fill = W - vim.fn.strwidth(left .. title .. hint .. right)
+  return {
+    text = {
+      { left, hl = B },
+      { title, hl = "SnacksDashboardTitle" },
+      { hint, hl = "SnacksDashboardKey" },
+      { ("─"):rep(fill) .. right, hl = B },
+    },
+  }
 end
 
 -- `parts` builds the row's text from the width it may use: a list of { str, hl }
@@ -99,8 +108,11 @@ local function row(icon, parts, key, action)
   return { text = line, key = key, action = action }
 end
 
-local function box(title_icon, title, rows, empty)
-  local items = { border("╭─ ", title_icon .. title .. " ", "╮") }
+-- The title row carries the box's own key: `key` runs `action`, shown as "(key)" in the title.
+local function box(title_icon, title, key, action, rows, empty)
+  local top = border("╭─ ", title_icon .. title .. " ", "╮", "(" .. key .. ") ")
+  top.key, top.action = key, action
+  local items = { top }
   for _, r in ipairs(rows) do
     items[#items + 1] = r
   end
@@ -122,7 +134,7 @@ local function file_icon(file)
   return { (glyph or " ") .. " ", hl = hl or "SnacksDashboardIcon" }
 end
 
--- Keys 1-5
+-- Keys 1-5; r for all recent files
 local function recent_box()
   local rows = {}
   for file in Snacks.dashboard.oldfiles() do
@@ -139,10 +151,11 @@ local function recent_box()
       break
     end
   end
-  return box(I.recent_title, "Recent files", rows, "No recent files yet")
+  return box(I.recent_title, "Recent files", "r", ":Telescope oldfiles", rows, "No recent files yet")
 end
 
--- Keys 6-0. Opening one makes it the working directory and opens the file tree there.
+-- Keys 6-0; p for all projects. Opening one makes it the working directory and opens the file
+-- tree there.
 local function projects_box()
   local find = require("insomnia.find")
   local rows = {}
@@ -155,7 +168,8 @@ local function projects_box()
       return { { name, hl = "SnacksDashboardFile" }, { "  " .. trunc_left(parent, rest), hl = "SnacksDashboardDir" } }
     end, tostring((i + 5) % 10), function() find.open_project(dir) end)
   end
-  return box(I.project, "Projects", rows, "Projects appear once you open files in a git repo")
+  local pick = function() find.pick_project() end
+  return box(I.project, "Projects", "p", pick, rows, "Projects appear once you open files in a git repo")
 end
 
 -- Layout: on wide windows the art and keys stay on the left and the two boxes sit on the right,
@@ -176,18 +190,34 @@ local function side_by_side(self)
   return self._size.width >= 2 * W + 4 + 4 + math.max(widest, footer) + 2
 end
 
--- A blank line between keys, unless the window is too short to show the whole dashboard with them.
--- Height with the blank lines: art + 21 side by side (title 4, keys 15, padding 1, startup 1),
--- art + 35 stacked (the boxes add 16, the keys' blank lines are 7 of the rest). Owl: 33 / 47.
+-- Heights, from the top of the art: title 4, keys KEYS + (KEYS - 1) blank lines, the two boxes
+-- 7 rows each plus 1 below, startup line 1. Side by side, the keys are centred against the boxes.
+local KEYS = 6 -- entries in preset.keys below
+local BOXES_H = 2 * (7 + 1)
+local function keys_h(gap) return KEYS + (KEYS - 1) * gap end
+local function keys_top(gap) return math.max(0, math.floor((BOXES_H - 1 - keys_h(gap)) / 2)) end
+
+-- A blank line between keys (1) unless the window is too short for the whole dashboard with them
+local function key_gap(self)
+  local art_h = art_lines()
+  local h = side_by_side(self) and art_h + 4 + math.max(keys_top(1) + keys_h(1) + 1, BOXES_H) + 1
+    or art_h + 4 + keys_h(1) + 1 + BOXES_H + 1
+  return h <= self._size.height and 1 or 0
+end
+
 local function keys_section(self)
-  local roomy = self._size.height >= art_lines() + (side_by_side(self) and 21 or 35)
-  return { section = "keys", gap = roomy and 1 or 0, padding = 1 }
+  local gap = key_gap(self)
+  local keys = { section = "keys", gap = gap, padding = 1 }
+  local top = side_by_side(self) and keys_top(gap) or 0
+  -- a spacer item (see startup()), not padding on the section, which would also replace the first
+  -- key's gap
+  return top > 0 and { { text = "", padding = top - 1 }, keys } or keys
 end
 
 local function boxes(self)
   local recent, projects = recent_box(), projects_box()
   if side_by_side(self) then
-    recent[1].padding = { 0, art_lines() + 4 } -- blank lines above, so the box starts level with the keys
+    recent[1].padding = { 0, art_lines() + 4 } -- blank lines above, level with the top of the keys column
   end
   return { pane = side_by_side(self) and 2 or 1, recent, projects }
 end
@@ -220,10 +250,19 @@ local function header(self)
   }
 end
 
+-- Side by side, the startup line goes below the taller of the two columns (usually the boxes), so
+-- centre() has an empty row to the right of it.
 local function startup(self)
   local item = Snacks.dashboard.sections.startup({ icon = I.startup })
   item.text = centre(self, item.text)
-  return item
+  local below = 0
+  if side_by_side(self) then
+    local gap = key_gap(self)
+    below = BOXES_H - (keys_top(gap) + keys_h(gap) + 1)
+  end
+  -- Spacer item, not padding above the item: snacks leaves those padding rows empty instead of
+  -- pane-wide, which would drag the right column's rows on them to the left edge.
+  return below > 0 and { { text = "", padding = below - 1 }, item } or item
 end
 
 return {
@@ -238,12 +277,11 @@ return {
         -- No Nerd Font: drop the file icons of recent files too (nil keeps snacks' formatter)
         formats = not nerd and { icon = function() return { "", width = 0 } end } or nil,
         preset = {
+          -- r (recent files) and p (projects) are on the boxes' titles. Update KEYS above if this changes.
           -- stylua: ignore
           keys = {
             { icon = I.find, key = "f", desc = "Find file", action = ":Telescope find_files" },
             { icon = I.grep, key = "g", desc = "Live grep", action = ":Telescope live_grep" },
-            { icon = I.recent, key = "r", desc = "Recent files", action = ":Telescope oldfiles" },
-            { icon = I.project, key = "p", desc = "Projects", action = function() require("insomnia.find").pick_project() end },
             { icon = I.tree, key = "e", desc = "File tree", action = ":NvimTreeToggle" },
             { icon = I.config, key = "c", desc = "Config", action = ":e ~/.config/nvim/init.lua" },
             { icon = I.lazy, key = "L", desc = "Lazy", action = ":Lazy" },
